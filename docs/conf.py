@@ -6,10 +6,9 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-
 import os
-import sys
 import shutil
+import sys
 
 # -- Path setup --------------------------------------------------------------
 
@@ -88,7 +87,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "pycoords"
-copyright = "2023, Aaron Nicholas Gumapac"
+copyright = "2023, Aaron Gumapac, Aeinnor Reyes"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -246,7 +245,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "user_guide.tex", "pycoords Documentation", "Aaron Nicholas Gumapac", "manual")
+    ("index", "user_guide.tex", "pycoords Documentation",
+     "Aaron Gumapac, Aeinnor Reyes", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

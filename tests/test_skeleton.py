@@ -1,6 +1,6 @@
 import pytest
 
-from pycoords.skeleton import fib, main
+from pycoords.pycoords import fib, main
 
 __author__ = "Aaron Gumapac, Aeinnor Reyes"
 __copyright__ = "Aaron Gumapac, Aeinnor Reyes"
