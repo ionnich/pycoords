@@ -2,8 +2,8 @@ import pytest
 
 from pycoords.skeleton import fib, main
 
-__author__ = "Aaron Nicholas Gumapac"
-__copyright__ = "Aaron Nicholas Gumapac"
+__author__ = "Aaron Gumapac, Aeinnor Reyes"
+__copyright__ = "Aaron Gumapac, Aeinnor Reyes"
 __license__ = "MIT"
 
 

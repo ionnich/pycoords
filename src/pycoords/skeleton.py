@@ -19,15 +19,14 @@ References:
     - https://setuptools.pypa.io/en/latest/userguide/entry_point.html
     - https://pip.pypa.io/en/stable/reference/pip_install
 """
-
 import argparse
 import logging
 import sys
 
 from pycoords import __version__
 
-__author__ = "Aaron Nicholas Gumapac"
-__copyright__ = "Aaron Nicholas Gumapac"
+__author__ = "Aaron Gumapac, Aeinnor Reyes"
+__copyright__ = "Aaron Gumapac, Aeinnor Reyes"
 __license__ = "MIT"
 
 _logger = logging.getLogger(__name__)
