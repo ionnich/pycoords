@@ -3,7 +3,7 @@ from geopy import Nominatim
 from pycoords.address import Address
 
 
-def geocode_coordinates(address: Address):
+def geocode(address: Address):
     """Initialize coordinates from address."""
 
     # copy address to an internal mutable object

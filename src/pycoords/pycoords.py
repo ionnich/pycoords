@@ -25,6 +25,8 @@ import sys
 
 from pycoords import __version__
 
+# from pycoords.coordinates import geocode
+
 __author__ = "Aaron Gumapac, Aeinnor Reyes"
 __copyright__ = "Aaron Gumapac, Aeinnor Reyes"
 __license__ = "MIT"
@@ -37,22 +39,6 @@ _logger = logging.getLogger(__name__)
 # Python scripts/interactive interpreter, e.g. via
 # `from pycoords.skeleton import fib`,
 # when using this Python module as a library.
-
-
-def fib(n):
-    """Fibonacci example function
-
-    Args:
-      n (int): integer
-
-    Returns:
-      int: n-th Fibonacci number
-    """
-    assert n > 0
-    a, b = 1, 1
-    for _i in range(n - 1):
-        a, b = b, a + b
-    return a
 
 
 # ---- CLI ----
@@ -121,9 +107,14 @@ def main(args):
     """
     args = parse_args(args)
     setup_logging(args.loglevel)
-    _logger.debug("Starting crazy calculations...")
-    print(f"The {args.n}-th Fibonacci number is {fib(args.n)}")
-    _logger.info("Script ends here")
+
+    # process the csv file
+    # for each row, create the address object
+    # with open(args.csv_file) as f:
+    # reader = DictReader(f)
+    # for row in reader:
+    #     ...
+    # build the str address
 
 
 def run():
