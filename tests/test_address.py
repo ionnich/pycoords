@@ -55,6 +55,34 @@ def test_address_mapper():
     assert addresses[2].longitude == ""
     assert addresses == t_addresses
 
+    for i, t_dict in enumerate(t_dictionaries):
+        address = addresses[i].dict()
+        address_dict = {key: value for key, value in address.items() if value != ""}
+        t_dict = {key: value for key, value in t_dict.items() if value != ""}
+
+        assert address_dict == t_dict
+
+
+def test_nonetypes():
+    none_dict = {
+        "name": None,
+        "address": None,
+        "city": None,
+        "state_code": None,
+        "postal_code": None,
+        "country_code": None,
+    }
+    address = Address(**none_dict)
+
+    assert address.name == ""
+    assert address.address == ""
+    assert address.city == ""
+    assert address.state_code == ""
+    assert address.postal_code == ""
+    assert address.country_code == ""
+    assert address.latitude == ""
+    assert address.longitude == ""
+
 
 def test_address_str():
     assert str(t_addresses[0]) == "714, 714 W. Girard Ave, Philadelphia, PA, 19123, US"

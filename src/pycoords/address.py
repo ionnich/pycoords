@@ -27,18 +27,23 @@ class Address(BaseModel):
             str: The converted string.
         """
 
-        _string = _string.strip()
+        try:
+            _string = _string.strip()
+        except AttributeError:
+            pass
 
         return _string or ""
 
-    name: str
-    address: str
-    city: str
-    state_code: str
-    postal_code: str
-    country_code: str
-    latitude: str = ""
-    longitude: str = ""
+    name: str | None
+    address: str | None
+    city: str | None
+
+    state_code: str | None
+    postal_code: str | None
+    country_code: str | None
+
+    latitude: str | None = ""
+    longitude: str | None = ""
 
     def __str__(self):
         """
