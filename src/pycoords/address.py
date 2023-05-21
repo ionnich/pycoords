@@ -58,8 +58,6 @@ class Address(BaseModel):
             key, value = item
             return value != "" and key != "phone"
 
-        accumulator = ""
-
         geocoding_fields = dict(filter(phone_and_empty_str, self.dict().items()))
         accumulator = ", ".join(geocoding_fields.values())
 
