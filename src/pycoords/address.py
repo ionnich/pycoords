@@ -1,7 +1,10 @@
-from pydantic import BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, validator
 
 
 class Address(BaseModel):
+    # TODO: Address object must be 1 to 1 to the csv object aside from the coordinates
     """Address dataclass that corresponds to a venue address.
 
     Attributes:
@@ -14,28 +17,43 @@ class Address(BaseModel):
         latitude (str | None): The latitude of the venue.
         longitude (str | None): The longitude of the venue.
     """
-    name: str | None = None
-    address: str | None = None
-    city: str | None = None
-    state_code: str | None = None
-    postal_code: str | None = None
-    country_code: str | None = None
-    latitude: str | None = None
-    longitude: str | None = None
+
+    @validator("*")
+    def nullify_empty_strings(cls, _string: str):
+        """Replaces empty strings with None
+
+        Args:
+            v (str): The value of the field.
+
+        Returns:
+            str | None: The value of the field or None.
+        """
+        _string = _string.strip()
+        return None if _string == "" else _string
+
+    name: Optional[str]
+    address: Optional[str]
+    city: Optional[str]
+    state_code: Optional[str]
+    postal_code: Optional[str]
+    country_code: Optional[str]
+    latitude: Optional[str]
+    longitude: Optional[str]
 
     def __str__(self):
-        return f"{self.address}, {self.city}, {self.state_code}, {self.postal_code}, {self.country_code}"
+        """
+        Builds a string of address attributes for values that are not None.
 
+        Returns:
+            str: A string representation of the address.
+        """
 
-def dictionaries_to_addresses(dictionaries: list) -> list:
-    """Converts a list of dictionaries to a list of addresses
+        accumulator = ""
+        for attribute in self.__dict__:
+            value = getattr(self, attribute)  # get value of attribute
 
-    Args:
-        dictionaries (list): A list of dictionaries that stores the venue details.
+            if value is not None:
+                accumulator += f"{value}, "
 
-    Returns:
-        list: A list of Address objects.
-    """
-    addresses = [Address(**row) for row in dictionaries]
-
-    return addresses
+        # remove trailing comma and space
+        return accumulator.strip().rstrip(",")
