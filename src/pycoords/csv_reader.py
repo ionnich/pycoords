@@ -1,8 +1,8 @@
 import csv
 
 
-def read_csv(file_name):
-    """Reads the data found in a csv file, converts them into addresses and stores them in a list.
+def read_csv(file_name) -> list:
+    """Reads a csv file and returns a dictionary of addresses.
 
     Args:
         file_name (str): The file name of the csv to be read.
@@ -12,12 +12,24 @@ def read_csv(file_name):
     """
     addresses = []
 
-    with open(file_name, "r") as file:
-        reader = csv.DictReader(file)
-        data = [row for row in reader]
+    try:
+        with open(file_name, "r") as file:
+            reader = csv.DictReader(file)
+            data = [row for row in reader]
+    except FileNotFoundError as e:
+        raise e
 
     for row in data:
         addresses.append(
-            {"name": row["name"], "address": row["address"], "city": row["city"], "state_code": row["state_code"], "postal_code": row["postal_code"], "country_code": row["country_code"]})
+            {
+                # TODO: @Aeinnor use dict.get()
+                "name": row.get("name"),
+                "address": row.get("address"),
+                "city": row["city"],
+                "state_code": row["state_code"],
+                "postal_code": row["postal_code"],
+                "country_code": row["country_code"],
+            }
+        )
 
     return addresses
