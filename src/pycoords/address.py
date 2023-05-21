@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel, validator
 
 
@@ -31,14 +29,14 @@ class Address(BaseModel):
         _string = _string.strip()
         return None if not _string else _string
 
-    name: Optional[str]
-    address: Optional[str]
-    city: Optional[str]
-    state_code: Optional[str]
-    postal_code: Optional[str]
-    country_code: Optional[str]
-    latitude: Optional[str]
-    longitude: Optional[str]
+    name: str | None
+    address: str | None
+    city: str | None
+    state_code: str | None
+    postal_code: str | None
+    country_code: str | None
+    latitude: str | None
+    longitude: str | None
 
     def __str__(self):
         """
