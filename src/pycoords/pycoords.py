@@ -138,7 +138,7 @@ def main(args):
         sys.exit(1)
 
     addresses: list = address_mapper.dict_to_address(unmapped_addresses)
-    parsed_addresses: list = geocoder.geocoded_addresses(addresses)
+    parsed_addresses: list = geocoder.geocode_addresses(addresses)
 
     # default filename
     output_filename = f"{source_csv}_geocoded.csv"
