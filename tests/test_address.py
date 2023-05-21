@@ -1,50 +1,25 @@
-from pycoords.address import address_from_string
+from pycoords.address import dictionaries_to_addresses, Address
 
-t_address = (
-    "Maddison Square Garden, 123 Main St, Anytown, CA, 12345, USA, 38.1234, -121.1234"
-)
+t_dictionaries = [
+    {"name": "714", "address": "714 W. Girard Ave", "city": "Philadelphia",
+     "state_code": "PA", "postal_code": "19123", "country_code": "US"},
+    {"name": "1933", "address": "7900 Downing Ave", "city": "Bakersfield",
+     "state_code": "CA", "postal_code": "93308", "country_code": "US"},
+    {"name": "013 - Tilburg", "address": "Veemarktstraat 44, 5038 CV",
+     "city": "Tilburg", "state_code": "", "postal_code": "", "country_code": "NL"},
+    {"name": "04 Center", "address": "2701 S Lamar Blvd", "city": "Austin",
+     "state_code": "TX", "postal_code": "78704", "country_code": "US"},
+    {"name": "1 Hotel South Beach", "address": "2341 Collins Ave", "city": "Miami Beach",
+     "state_code": "FL", "postal_code": "33139", "country_code": "US"}
+]
 
-
-def test_address_from_string():
-    address = address_from_string(t_address)
-    assert address.name == "Maddison Square Garden"
-    assert address.address == "123 Main St"
-    assert address.city == "Anytown"
-    assert address.state_code == "CA"
-    assert address.postal_code == "12345"
-    assert address.country_code == "USA"
-    assert address.latitude == "38.1234"
-    assert address.longitude == "-121.1234"
-
-
-def test_creates_separate_instances():
-    address1 = address_from_string(t_address)
-    address2 = address_from_string(t_address)
-    assert address1 is not address2
+t_addresses = [Address(**data) for data in t_dictionaries]
 
 
-def test_incomplete_address():
-    # remove last two fields from t_address
-    t_address_incomplete = ",".join(t_address.split(",")[:-2])
+def test_dictionaries_to_addresses():
+    addresses = dictionaries_to_addresses(t_dictionaries)
 
-    address = address_from_string(t_address_incomplete)
-    assert address.name == "Maddison Square Garden"
-    assert address.address == "123 Main St"
-    assert address.city == "Anytown"
-    assert address.state_code == "CA"
-    assert address.postal_code == "12345"
-    assert address.country_code == "USA"
-    assert address.latitude is None
-    assert address.longitude is None
-
-
-def test_empty_address():
-    address = address_from_string("".strip())
-    assert address.name is None
-    assert address.address is None
-    assert address.city is None
-    assert address.state_code is None
-    assert address.postal_code is None
-    assert address.country_code is None
-    assert address.latitude is None
-    assert address.longitude is None
+    assert addresses[2].state_code is None
+    assert addresses[2].latitude is None
+    assert addresses[2].longitude is None
+    assert addresses == t_addresses

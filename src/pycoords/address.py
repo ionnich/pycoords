@@ -1,31 +1,19 @@
-from typing import Any, Dict
-
 from pydantic import BaseModel
 
 
-def address_from_string(s: str):
-    address_dict: Dict[str, Any] = {
-        "name": None,
-        "address": None,
-        "city": None,
-        "state_code": None,
-        "postal_code": None,
-        "country_code": None,
-        "latitude": None,
-        "longitude": None,
-    }
-
-    substrings = s.split(",")
-
-    for i, entry in enumerate(substrings):
-        if entry:
-            key = list(address_dict.keys())[i]  # get the ith key from address_dict
-            address_dict[key] = entry.strip()
-
-    return Address(**address_dict)
-
-
 class Address(BaseModel):
+    """Address dataclass that corresponds to a venue address.
+
+    Attributes:
+        name (str | None): The name of the venue.
+        address (str | None): The address of the venue.
+        city (str | None): The city of the venue.
+        state_code (str | None): The state code of the venue.
+        postal_code (str | None): The postal code of the venue.
+        country_code (str | None): The country code of the venue.
+        latitude (str | None): The latitude of the venue.
+        longitude (str | None): The longitude of the venue.
+    """
     name: str | None = None
     address: str | None = None
     city: str | None = None
@@ -35,40 +23,19 @@ class Address(BaseModel):
     latitude: str | None = None
     longitude: str | None = None
 
-    def add_name(self, name: str):
-        self.name = name
-        return self
-
-    def add_address(self, address: str):
-        self.address = address
-        return self
-
-    def add_city(self, city: str):
-        self.city = city
-        return self
-
-    def add_state_code(self, state_code: str):
-        self.state_code = state_code
-        return self
-
-    def add_postal_code(self, postal_code: str):
-        self.postal_code = postal_code
-        return self
-
-    def add_country_code(self, country_code: str):
-        self.country_code = country_code
-        return self
-
-    def add_latitude(self, latitude: str):
-        self.latitude = latitude
-        return self
-
-    def add_longitude(self, longitude: str):
-        self.longitude = longitude
-        return self
-
     def __str__(self):
-        pass
+        return f"{self.address}, {self.city}, {self.state_code}, {self.postal_code}, {self.country_code}"
 
-    # TODO: @aein return the right f string
-    # return f""
+
+def dictionaries_to_addresses(dictionaries: list) -> list:
+    """Converts a list of dictionaries to a list of addresses
+
+    Args:
+        dictionaries (list): A list of dictionaries that stores the venue details.
+
+    Returns:
+        list: A list of Address objects.
+    """
+    addresses = [Address(**row) for row in dictionaries]
+
+    return addresses
