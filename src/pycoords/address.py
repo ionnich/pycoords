@@ -29,7 +29,7 @@ class Address(BaseModel):
             str | None: The value of the field or None.
         """
         _string = _string.strip()
-        return None if _string == "" else _string
+        return None if not _string else _string
 
     name: Optional[str]
     address: Optional[str]
