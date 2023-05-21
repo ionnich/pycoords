@@ -13,7 +13,9 @@ def write_csv(addresses: list, filename="geocoded_addresses.csv") -> int:
     # TODO: Placeholder, delete when you implemenet
     print(filename)
 
+    # TODO: Add counter for number of addresses that have None for lat and lon
+    count = 0
     if not addresses:
-        return 0
+        return count
 
-    return 0
+    return count

@@ -23,7 +23,7 @@ import argparse
 import logging
 import sys
 
-from pycoords import __version__, address_mapper, csv_reader, csv_writer
+from pycoords import __version__, address_mapper, csv_reader, csv_writer, geocoder
 
 # from pycoords.coordinates import geocode
 
@@ -138,14 +138,15 @@ def main(args):
         sys.exit(1)
 
     addresses: list = address_mapper.dict_to_address(unmapped_addresses)
-    # TODO: @Aeinnor change this according to argparse
+    parsed_addresses: list = geocoder.geocoded_addresses(addresses)
 
     # default filename
     output_filename = f"{source_csv}_geocoded.csv"
+    # TODO: @Aeinnor change this according to argparse
     if args.output:
         output_filename = args.output
 
-    success_count: int = csv_writer.write_csv(addresses, output_filename)
+    success_count: int = csv_writer.write_csv(parsed_addresses, output_filename)
     _logger.info(
         "Successfully geocoded %d/%d addresses to %s",
         success_count,

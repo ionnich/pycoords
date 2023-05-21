@@ -3,6 +3,19 @@ from geopy import Nominatim
 from pycoords.address import Address
 
 
+def geocode_addresses(addresses: list) -> list:
+    """Geocodes a list of addresses.
+
+    Args:
+        addresses (list): A list of addresses.
+
+    Returns:
+        list: A list of addresses with the lat and lon attributes populated.
+    """
+
+    return [geocode(address) for address in addresses]
+
+
 def geocode(address: Address) -> Address:
     """
     Geocodes an address using the Nominatim geocoder.
@@ -18,7 +31,6 @@ def geocode(address: Address) -> Address:
 
     # copy address to an internal mutable object
     _address = address.copy()
-
     _address_str = str(_address)
 
     location = geolocator.geocode(_address_str)
