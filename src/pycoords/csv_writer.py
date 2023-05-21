@@ -1,3 +1,6 @@
+from csv import DictWriter
+
+
 def write_csv(addresses: list, filename="geocoded_addresses.csv") -> int:
     # TODO: @Aeinnor implement this
     """Writes the data found in a list of addresses into a csv file.
@@ -9,13 +12,20 @@ def write_csv(addresses: list, filename="geocoded_addresses.csv") -> int:
         int: The number of addresses written to the csv file.
 
     """
-
-    # TODO: Placeholder, delete when you implemenet
-    print(filename)
-
-    # TODO: Add counter for number of addresses that have None for lat and lon
     count = 0
+
     if not addresses:
         return count
+
+    with open(filename, "w", newline="") as file:
+        fieldnames = addresses[0].get(keys())
+
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        for address in addresses:
+            if address.get("latitude") is "" or address.get("longitude") is "":
+                count += 1
+
+            writer.writerow(row)
 
     return count
