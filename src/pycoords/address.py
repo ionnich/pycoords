@@ -54,8 +54,8 @@ class Address(BaseModel):
             str: A string representation of the address necessary for geocoding.
         """
 
-        def remove_phone_and_empty_str(item):
-            key, value = item
+        def remove_phone_and_empty_str(dictionary_item):
+            key, value = dictionary_item
             return value != "" and key != "phone"
 
         geocoding_fields = dict(filter(remove_phone_and_empty_str, self.dict().items()))
