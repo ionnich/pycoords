@@ -22,13 +22,13 @@ def read_csv(file_name) -> list:
     for row in data:
         addresses.append(
             {
-                # TODO: @Aeinnor use dict.get()
                 "name": row.get("name"),
                 "address": row.get("address"),
-                "city": row["city"],
-                "state_code": row["state_code"],
-                "postal_code": row["postal_code"],
-                "country_code": row["country_code"],
+                "city": row.get("city"),
+                "state_code": row.get("state_code"),
+                "country_code": row.get("country_code"),
+                "postal_code": row.get("postal_code"),
+                "phone": row.get("phone"),
             }
         )
 
