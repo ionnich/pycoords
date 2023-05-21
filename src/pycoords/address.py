@@ -6,14 +6,15 @@ class Address(BaseModel):
     """Address dataclass that corresponds to a venue address.
 
     Attributes:
-        name (str | None): The name of the venue.
-        address (str | None): The address of the venue.
-        city (str | None): The city of the venue.
-        state_code (str | None): The state code of the venue.
-        postal_code (str | None): The postal code of the venue.
-        country_code (str | None): The country code of the venue.
-        latitude (str | None): The latitude of the venue.
-        longitude (str | None): The longitude of the venue.
+        name (str): The name of the venue.
+        address (str): The address of the venue.
+        city (str): The city of the venue.
+        state_code (str): The state code of the venue.
+        country_code (str): The country code of the venue.
+        postal_code (str): The postal code of the venue.
+        phone (str): The phone number of the venue.
+        latitude (str): The latitude of the venue.
+        longitude (str): The longitude of the venue.
     """
 
     @validator("*")
@@ -37,15 +38,15 @@ class Address(BaseModel):
     name: str | None
     address: str | None
     city: str | None
-
     state_code: str | None
-    postal_code: str | None
     country_code: str | None
-
+    postal_code: str | None
+    phone: str | None
     latitude: str | None = ""
     longitude: str | None = ""
 
     def __str__(self):
+        # TODO Remove phone from the string
         """
         Builds a string of address attributes for values that are not None.
 
