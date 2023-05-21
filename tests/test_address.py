@@ -50,9 +50,9 @@ t_addresses = [Address(**data) for data in t_dictionaries]
 def test_address_mapper():
     addresses = dict_to_address(t_dictionaries)
 
-    assert addresses[2].state_code is None
-    assert addresses[2].latitude is None
-    assert addresses[2].longitude is None
+    assert addresses[2].state_code == ""
+    assert addresses[2].latitude == ""
+    assert addresses[2].longitude == ""
     assert addresses == t_addresses
 
 

@@ -17,26 +17,28 @@ class Address(BaseModel):
     """
 
     @validator("*")
-    def nullify_empty_strings(cls, _string: str):
-        """Replaces empty strings with None
+    def none_to_empty(cls, _string: str):
+        """Converts None values to empty strings.
 
         Args:
-            v (str): The value of the field.
+            _string (str): The string to convert.
 
         Returns:
-            str | None: The value of the field or None.
+            str: The converted string.
         """
-        _string = _string.strip()
-        return None if not _string else _string
 
-    name: str | None
-    address: str | None
-    city: str | None
-    state_code: str | None
-    postal_code: str | None
-    country_code: str | None
-    latitude: str | None
-    longitude: str | None
+        _string = _string.strip()
+
+        return _string or ""
+
+    name: str
+    address: str
+    city: str
+    state_code: str
+    postal_code: str
+    country_code: str
+    latitude: str = ""
+    longitude: str = ""
 
     def __str__(self):
         """
@@ -50,7 +52,7 @@ class Address(BaseModel):
         for attribute in self.__dict__:
             value = getattr(self, attribute)  # get value of attribute
 
-            if value is not None:
+            if value:
                 accumulator += f"{value}, "
 
         # remove trailing comma and space
