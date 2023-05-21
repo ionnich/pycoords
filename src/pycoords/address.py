@@ -39,28 +39,29 @@ class Address(BaseModel):
     address: str | None
     city: str | None
     state_code: str | None
-    country_code: str | None
     postal_code: str | None
+    country_code: str | None
     phone: str | None
     latitude: str | None = ""
     longitude: str | None = ""
     phone: str | None = ""
 
     def __str__(self):
-        # TODO Remove phone from the string
         """
-        Builds a string of address attributes for values that are not None.
+        Builds a string of the address fit for geocoding fields
 
         Returns:
-            str: A string representation of the address.
+            str: A string representation of the address necessary for geocoding.
         """
 
+        def phone_and_empty_str(item):
+            key, value = item
+            return value != "" and key != "phone"
+
         accumulator = ""
-        for attribute in self.__dict__:
-            value = getattr(self, attribute)  # get value of attribute
 
-            if value and attribute != "phone":
-                accumulator += f"{value}, "
+        geocoding_fields = dict(filter(phone_and_empty_str, self.dict().items()))
+        accumulator = ", ".join(geocoding_fields.values())
 
-        # remove trailing comma and space
+        # remove trailing comma
         return accumulator.strip().rstrip(",")

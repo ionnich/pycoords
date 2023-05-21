@@ -78,6 +78,7 @@ def test_nonetypes():
         "postal_code": None,
         "phone": None,
     }
+
     address = Address(**none_dict)
 
     assert address.name == ""
@@ -88,6 +89,7 @@ def test_nonetypes():
     assert address.country_code == ""
     assert address.latitude == ""
     assert address.longitude == ""
+    assert address.phone == ""
 
 
 def test_address_str():
