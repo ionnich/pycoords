@@ -54,11 +54,11 @@ class Address(BaseModel):
             str: A string representation of the address necessary for geocoding.
         """
 
-        def phone_and_empty_str(item):
+        def remove_phone_and_empty_str(item):
             key, value = item
             return value != "" and key != "phone"
 
-        geocoding_fields = dict(filter(phone_and_empty_str, self.dict().items()))
+        geocoding_fields = dict(filter(remove_phone_and_empty_str, self.dict().items()))
         accumulator = ", ".join(geocoding_fields.values())
 
         # remove trailing comma
