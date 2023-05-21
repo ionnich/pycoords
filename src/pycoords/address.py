@@ -44,6 +44,7 @@ class Address(BaseModel):
 
     latitude: str | None = ""
     longitude: str | None = ""
+    phone: str | None = ""
 
     def __str__(self):
         """
@@ -57,7 +58,7 @@ class Address(BaseModel):
         for attribute in self.__dict__:
             value = getattr(self, attribute)  # get value of attribute
 
-            if value:
+            if value and attribute != "phone":
                 accumulator += f"{value}, "
 
         # remove trailing comma and space
