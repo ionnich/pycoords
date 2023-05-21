@@ -23,7 +23,7 @@ import argparse
 import logging
 import sys
 
-from pycoords import __version__
+from pycoords import __version__, address_mapper, csv_reader, csv_writer
 
 # from pycoords.coordinates import geocode
 
@@ -32,6 +32,10 @@ __copyright__ = "Aaron Gumapac, Aeinnor Reyes"
 __license__ = "MIT"
 
 _logger = logging.getLogger(__name__)
+# NOTE: if you wanna use loguru instead of logging, you can do this:
+# from loguru import logger as _logger
+# set the name:
+# _logger.name = __name__
 
 
 # ---- Python API ----
@@ -48,6 +52,7 @@ _logger = logging.getLogger(__name__)
 
 
 def parse_args(args):
+    # TODO: @Aeinnor finish parse args
     """Parse command line parameters
 
     Args:
@@ -84,6 +89,7 @@ def parse_args(args):
 
 
 def setup_logging(loglevel):
+    # TODO: @Aeinnor Setup logger
     """Setup basic logging
 
     Args:
@@ -94,8 +100,21 @@ def setup_logging(loglevel):
         level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
     )
 
+    # NOTE: if you wanna use loguru instead of logging:
+    # # set the level:
+    # _logger.level(loglevel)
+    # # set the format:
+    # _logger.add(
+    #     sys.stdout,
+    #     format=logformat,
+    #     level=loglevel,
+    #     colorize=True,
+    #     backtrace=True
+    # )
+
 
 def main(args):
+    # TODO: @Aeinnor fix docs
     """Wrapper allowing :func:`fib` to be called with string arguments in a CLI fashion
 
     Instead of returning the value from :func:`fib`, it prints the result to the
@@ -108,27 +127,45 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.loglevel)
 
-    # process the csv file
-    # for each row, create the address object
-    # with open(args.csv_file) as f:
-    # reader = DictReader(f)
-    # for row in reader:
-    #     ...
-    # build the str address
+    # TODO: @Aeinnor change this according to argparse
+    source_csv = args.source_csv
+
+    try:
+        unmapped_addresses: list = csv_reader.read_csv(source_csv)
+        total_unmapped = len(unmapped_addresses)
+    except FileNotFoundError:
+        _logger.error("File not found: %s", source_csv)
+        sys.exit(1)
+
+    addresses: list = address_mapper.dict_to_address(unmapped_addresses)
+    # TODO: @Aeinnor change this according to argparse
+
+    # default filename
+    output_filename = f"{source_csv}_geocoded.csv"
+    if args.output:
+        output_filename = args.output
+
+    success_count: int = csv_writer.write_csv(addresses, output_filename)
+    _logger.info(
+        "Successfully geocoded %d/%d addresses to %s",
+        success_count,
+        total_unmapped,
+        output_filename,
+    )
 
 
 def run():
     """Calls :func:`main` passing the CLI arguments extracted from :obj:`sys.argv`
 
-    This function can be used as entry point to create console scripts with setuptools.
+    This function iss used as entry point to create console scripts with setuptools.
     """
     main(sys.argv[1:])
 
 
 if __name__ == "__main__":
+    # NOTE:
     # After installing your project with pip, users can also run your Python
     # modules as scripts via the ``-m`` flag, as defined in PEP 338::
-    #
     #     python -m pycoords.skeleton 42
     #
     run()
