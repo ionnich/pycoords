@@ -93,13 +93,8 @@ def test_nonetypes():
 
 
 def test_address_str():
-    assert str(t_addresses[0]) == "714, 714 W. Girard Ave, Philadelphia, PA, 19123, US"
-    assert str(t_addresses[1]) == "1933, 7900 Downing Ave, Bakersfield, CA, 93308, US"
-    assert (
-        str(t_addresses[2]) == "013 - Tilburg, Veemarktstraat 44, 5038 CV, Tilburg, NL"
-    )
-    assert str(t_addresses[3]) == "04 Center, 2701 S Lamar Blvd, Austin, TX, 78704, US"
-    assert (
-        str(t_addresses[4])
-        == "1 Hotel South Beach, 2341 Collins Ave, Miami Beach, FL, 33139, US"
-    )
+    assert str(t_addresses[0]) == "714 W. Girard Ave, Philadelphia, PA, US, 19123"
+    assert str(t_addresses[1]) == "7900 Downing Ave, Bakersfield, CA, US, 93308"
+    assert str(t_addresses[2]) == "Veemarktstraat 44, 5038 CV, Tilburg, NL"
+    assert str(t_addresses[3]) == "2701 S Lamar Blvd, Austin, TX, US, 78704"
+    assert str(t_addresses[4]) == "2341 Collins Ave, Miami Beach, FL, US, 33139"
