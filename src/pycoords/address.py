@@ -39,12 +39,11 @@ class Address(BaseModel):
     address: str | None
     city: str | None
     state_code: str | None
-    postal_code: str | None
     country_code: str | None
+    postal_code: str | None
     phone: str | None
     latitude: str | None = ""
     longitude: str | None = ""
-    phone: str | None = ""
 
     def __str__(self):
         """
@@ -54,9 +53,11 @@ class Address(BaseModel):
             str: A string representation of the address necessary for geocoding.
         """
 
+        ignored_keys = ["phone", "name"]
+
         def remove_phone_and_empty_str(dictionary_item):
             key, value = dictionary_item
-            return value != "" and key != "phone"
+            return value != "" and key not in ignored_keys
 
         geocoding_fields = dict(filter(remove_phone_and_empty_str, self.dict().items()))
         accumulator = ", ".join(geocoding_fields.values())
