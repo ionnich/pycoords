@@ -18,14 +18,14 @@ def write_csv(addresses: list, filename="geocoded_addresses.csv") -> int:
         return count
 
     with open(filename, "w", newline="") as file:
-        fieldnames = addresses[0].get(keys())
+        fieldnames = addresses[0].schema()["properties"].keys()
 
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer = DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         for address in addresses:
-            if address.get("latitude") is "" or address.get("longitude") is "":
+            if address.latitude != "" and address.longitude != "":
                 count += 1
 
-            writer.writerow(row)
+            writer.writerow(address.dict())
 
     return count
