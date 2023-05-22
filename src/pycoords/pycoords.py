@@ -1,9 +1,8 @@
 import argparse
-from loguru import logger as _logger
-import logging
-import sys
-import os
 import re
+import sys
+
+from loguru import logger as _logger
 
 from pycoords import address_mapper, csv_reader, csv_writer, geocoder
 
@@ -41,7 +40,8 @@ def parse_args(args: list) -> argparse.Namespace:
     """
 
     parser = argparse.ArgumentParser(
-        description="Gets the coordinates of venues via csv I/O")
+        description="Gets the coordinates of venues via csv I/O"
+    )
     parser.add_argument(
         "-s",
         "--source",
@@ -83,7 +83,8 @@ def setup_logging(loglevel):
 
 
 def main(args):
-    """CLI program that takes a CSV file that stores venues as input and returns a new CSV file with the coordinates of the venues.
+    """CLI program that takes a CSV file that stores venues as input
+    and returns a new CSV file with the coordinates of the venues.
 
     Args:
       args (List[str]): Command line parameters as list of strings.
@@ -112,8 +113,9 @@ def main(args):
     if is_csv(args.output):
         output_filename = args.output
     else:
-        _.logger.error(
-            "File extension must be .csv, output file name will be set to default")
+        _logger.error(
+            "File extension must be .csv, output file name will be set to default"
+        )
 
     success_count: int = csv_writer.write_csv(parsed_addresses, output_filename)
     _logger.info(
