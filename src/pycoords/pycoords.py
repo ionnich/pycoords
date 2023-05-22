@@ -1,5 +1,6 @@
 import argparse
 from loguru import logger as _logger
+import logging
 import sys
 import os
 import re
@@ -45,54 +46,43 @@ def parse_args(args: list) -> argparse.Namespace:
         "-s",
         "--source",
         type=str,
-        help="File name of the input CSV",
+        help="file name of the input CSV",
+        metavar="source_file",
         required=True,
     )
     parser.add_argument(
         "-o",
         "--output",
         type=str,
-        help="File name of the output CSV",
+        help="file name of the output CSV",
+        metavar="output_file",
         required=False,
     )
     parser.add_argument(
         "-v",
         "--verbose",
         dest="loglevel",
-        help="set loglevel to INFO",
-        action="store_const",
-        const=logging.INFO,
-    )
-    parser.add_argument(
-        "-vv",
-        "--very-verbose",
-        dest="loglevel",
         help="set loglevel to DEBUG",
         action="store_const",
-        const=logging.DEBUG,
+        const="DEBUG",
+        required=False,
     )
     return parser.parse_args(args)
 
 
 def setup_logging(loglevel):
-    # TODO: @Aeinnor Setup logger
     """Setup basic logging
 
     Args:
       loglevel (int): minimum loglevel for emitting messages
     """
-    _logger.level(loglevel)
-    _logger.add(
-        sys.stdout,
-        format=Logformat,
-        Level=Loglevel,
-        colorize=True,
-        backtrace=True,
-    )
+    _logger.level("INFO")
+
+    if loglevel:
+        _logger.level(loglevel)
 
 
 def main(args):
-    # TODO: @Aeinnor fix docs
     """CLI program that takes a CSV file that stores venues as input and returns a new CSV file with the coordinates of the venues.
 
     Args:
@@ -101,10 +91,11 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.loglevel)
 
-    if not is_csv(args.source_csv):
-        sys.exit("Input is not a CSV file")
+    if not is_csv(args.source):
+        _logger.error("Input is not a CSV file")
+        sys.exit(1)
 
-    source_csv = args.source_csv
+    source_csv = args.source
 
     try:
         unmapped_addresses: list = csv_reader.read_csv(source_csv)
