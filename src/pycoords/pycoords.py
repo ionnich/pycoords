@@ -1,29 +1,10 @@
-"""
-This is a skeleton file that can serve as a starting point for a Python
-console script. To run this script uncomment the following lines in the
-``[options.entry_points]`` section in ``setup.cfg``::
-
-    console_scripts =
-         fibonacci = pycoords.skeleton:run
-
-Then run ``pip install .`` (or ``pip install -e .`` for editable mode)
-which will install the command ``fibonacci`` inside your current environment.
-
-Besides console scripts, the header (i.e. until ``_logger``...) of this file can
-also be used as template for Python modules.
-
-Note:
-    This file can be renamed depending on your needs or safely removed if not needed.
-
-References:
-    - https://setuptools.pypa.io/en/latest/userguide/entry_point.html
-    - https://pip.pypa.io/en/stable/reference/pip_install
-"""
 import argparse
-import logging
+from loguru import logger as _logger
 import sys
+import os
+import re
 
-from pycoords import __version__, address_mapper, csv_reader, csv_writer, geocoder
+from pycoords import address_mapper, csv_reader, csv_writer, geocoder
 
 # from pycoords.coordinates import geocode
 
@@ -31,28 +12,23 @@ __author__ = "Aaron Gumapac, Aeinnor Reyes"
 __copyright__ = "Aaron Gumapac, Aeinnor Reyes"
 __license__ = "MIT"
 
-_logger = logging.getLogger(__name__)
-# NOTE: if you wanna use loguru instead of logging, you can do this:
-# from loguru import logger as _logger
-# set the name:
-# _logger.name = __name__
+_logger.name = __name__
 
 
-# ---- Python API ----
-# The functions defined in this section can be imported by users in their
-# Python scripts/interactive interpreter, e.g. via
-# `from pycoords.skeleton import fib`,
-# when using this Python module as a library.
+def is_csv(file_name):
+    """_summary_
+
+    Args:
+        file_path (str): Path of the file to be validated.
+
+    Returns:
+        bool: True if the extension of the input is '.csv'. False otherwise.
+    """
+    csv_format = r"^.*\.csv$"
+    return re.search(csv_format, file_name, re.IGNORECASE) is not None
 
 
-# ---- CLI ----
-# The functions defined in this section are wrappers around the main Python
-# API allowing them to be called directly from the terminal as a CLI
-# executable/script.
-
-
-def parse_args(args):
-    # TODO: @Aeinnor finish parse args
+def parse_args(args: list) -> argparse.Namespace:
     """Parse command line parameters
 
     Args:
@@ -62,13 +38,23 @@ def parse_args(args):
     Returns:
       :obj:`argparse.Namespace`: command line parameters namespace
     """
-    parser = argparse.ArgumentParser(description="Just a Fibonacci demonstration")
+
+    parser = argparse.ArgumentParser(
+        description="Gets the coordinates of venues via csv I/O")
     parser.add_argument(
-        "--version",
-        action="version",
-        version=f"pycoords {__version__}",
+        "-s",
+        "--source",
+        type=str,
+        help="File name of the input CSV",
+        required=True,
     )
-    parser.add_argument(dest="n", help="n-th Fibonacci number", type=int, metavar="INT")
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        help="File name of the output CSV",
+        required=False,
+    )
     parser.add_argument(
         "-v",
         "--verbose",
@@ -95,39 +81,29 @@ def setup_logging(loglevel):
     Args:
       loglevel (int): minimum loglevel for emitting messages
     """
-    logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    logging.basicConfig(
-        level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
+    _logger.level(loglevel)
+    _logger.add(
+        sys.stdout,
+        format=Logformat,
+        Level=Loglevel,
+        colorize=True,
+        backtrace=True,
     )
-
-    # NOTE: if you wanna use loguru instead of logging:
-    # # set the level:
-    # _logger.level(loglevel)
-    # # set the format:
-    # _logger.add(
-    #     sys.stdout,
-    #     format=logformat,
-    #     level=loglevel,
-    #     colorize=True,
-    #     backtrace=True
-    # )
 
 
 def main(args):
     # TODO: @Aeinnor fix docs
-    """Wrapper allowing :func:`fib` to be called with string arguments in a CLI fashion
-
-    Instead of returning the value from :func:`fib`, it prints the result to the
-    ``stdout`` in a nicely formatted message.
+    """CLI program that takes a CSV file that stores venues as input and returns a new CSV file with the coordinates of the venues.
 
     Args:
-      args (List[str]): command line parameters as list of strings
-          (for example  ``["--verbose", "42"]``).
+      args (List[str]): Command line parameters as list of strings.
     """
     args = parse_args(args)
     setup_logging(args.loglevel)
 
-    # TODO: @Aeinnor change this according to argparse
+    if not is_csv(args.source_csv):
+        sys.exit("Input is not a CSV file")
+
     source_csv = args.source_csv
 
     try:
@@ -142,9 +118,11 @@ def main(args):
 
     # default filename
     output_filename = f"{source_csv}_geocoded.csv"
-    # TODO: @Aeinnor change this according to argparse
-    if args.output:
+    if is_csv(args.output):
         output_filename = args.output
+    else:
+        _.logger.error(
+            "File extension must be .csv, output file name will be set to default")
 
     success_count: int = csv_writer.write_csv(parsed_addresses, output_filename)
     _logger.info(

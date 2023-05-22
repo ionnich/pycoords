@@ -2,6 +2,7 @@
 # import pytest
 # from pycoords.coordinates import geocode
 # from pycoords.pycoords import fib, main
+from pycoords.pycoords import is_csv
 
 __author__ = "Aaron Gumapac, Aeinnor Reyes"
 __copyright__ = "Aaron Gumapac, Aeinnor Reyes"
@@ -49,3 +50,7 @@ with open("test.csv", "w") as f:
 #             ).add_longitude(
 #                 row["longitude"]
 #             )
+
+def test_is_csv():
+    assert is_csv("sample.csv") == True
+    assert is_csv("text.txt") == False
