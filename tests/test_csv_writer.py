@@ -1,9 +1,8 @@
-import os
 import csv
-import pytest
+import os
 
-from pycoords.csv_writer import write_csv
 from pycoords.address import Address
+from pycoords.csv_writer import write_csv
 
 # TODO @Aeinnor Implement this
 t_dataset = [
@@ -55,19 +54,16 @@ t_dataset = [
 ]
 
 
-@pytest.fixture
-def csv_file(tmp_path):
+def test_csv_writer():
     test_dir = os.path.dirname(os.path.abspath(__file__))
-    csv_file_path = os.path.join(test_dir, "sample.csv")
+    csv_file_path = os.path.join(test_dir, "write_sample.csv")
 
-    file_path = tmp_path / "test.csv"
-    with open(csv_file_path, "r") as sample_file:
-        content = original.file.read()
-        with open(file_path, "w") as test_file:
-            test_file.write(content)
-    yield file_path
+    geocoded = write_csv(t_dataset, csv_file_path)
 
+    with open(csv_file_path, "r") as file:
+        reader = csv.DictReader(file)
+        data = [row for row in reader]
 
-def test_csv_writer(csv_file):
-    data = t_dataset
-    write_csv(csv_file, data)
+    assert geocoded == 0
+    assert len(data) == 5
+    assert data == [address.dict() for address in t_dataset]
