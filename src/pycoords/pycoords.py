@@ -1,10 +1,14 @@
 import argparse
 import re
 import sys
+from os import path
 
 from loguru import logger as _logger
 
-from pycoords import address_mapper, csv_reader, csv_writer, geocoder
+from pycoords.address_mapper import dict_to_address
+from pycoords.csv_reader import read_csv
+from pycoords.csv_writer import write_csv
+from pycoords.geocoder import geocode_addresses
 
 # from pycoords.coordinates import geocode
 
@@ -12,7 +16,7 @@ __author__ = "Aaron Gumapac, Aeinnor Reyes"
 __copyright__ = "Aaron Gumapac, Aeinnor Reyes"
 __license__ = "MIT"
 
-_logger.name = __name__
+_logger.name = __name__  # type: ignore
 
 
 def is_csv(file_name):
@@ -26,6 +30,10 @@ def is_csv(file_name):
     """
     csv_format = r"^.*\.csv$"
     return re.search(csv_format, file_name, re.IGNORECASE) is not None
+
+
+def file_exists(file_name):
+    return path.isfile(file_name) is not None
 
 
 def parse_args(args: list) -> argparse.Namespace:
@@ -67,6 +75,15 @@ def parse_args(args: list) -> argparse.Namespace:
         const="DEBUG",
         required=False,
     )
+    parser.add_argument(
+        "-e",
+        "--engine",
+        type=str,
+        help="geocoding engine used",
+        metavar="engine",
+        required=False,
+        choices=["nominatim", "google"],
+    )
     return parser.parse_args(args)
 
 
@@ -90,34 +107,36 @@ def main(args):
       args (List[str]): Command line parameters as list of strings.
     """
     args = parse_args(args)
-    setup_logging(args.loglevel)
-
-    if not is_csv(args.source):
-        _logger.error("Input is not a CSV file")
-        sys.exit(1)
 
     source_csv = args.source
+    if engine := args.engine:
+        _logger.info("Using %s as geocoding engine", engine)
+    else:
+        engine = "nominatim"
+
+    setup_logging(args.loglevel)
+
+    if not file_exists(source_csv):
+        _logger.error("%s is invalid", source_csv)
+
+    unmapped_addresses: list = read_csv(source_csv)
+    total_unmapped = len(unmapped_addresses)
+    addresses: list = dict_to_address(unmapped_addresses)
 
     try:
-        unmapped_addresses: list = csv_reader.read_csv(source_csv)
-        total_unmapped = len(unmapped_addresses)
-    except FileNotFoundError:
-        _logger.error("File not found: %s", source_csv)
-        sys.exit(1)
+        parsed_addresses: list = geocode_addresses(addresses, engine=engine)
+    except ValueError as e:
+        _logger.error(e)
+        sys.exit()
 
-    addresses: list = address_mapper.dict_to_address(unmapped_addresses)
-    parsed_addresses: list = geocoder.geocode_addresses(addresses)
-
-    # default filename
     output_filename = f"{source_csv}_geocoded.csv"
     if is_csv(args.output):
         output_filename = args.output
     else:
-        _logger.error(
-            "File extension must be .csv, output file name will be set to default"
-        )
+        _logger.warning("File extension must be .csv -> using %s", output_filename)
 
-    success_count: int = csv_writer.write_csv(parsed_addresses, output_filename)
+    success_count: int = write_csv(parsed_addresses, output_filename)
+
     _logger.info(
         "Successfully geocoded %d/%d addresses to %s",
         success_count,

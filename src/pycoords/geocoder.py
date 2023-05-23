@@ -1,80 +1,60 @@
-from time import sleep as std_sleep
-from typing import Callable
+from os import environ
 
-from geopy import Nominatim
-from geopy.exc import GeocoderQueryError, GeocoderTimedOut, GeocoderUnavailable
+from dotenv import load_dotenv
 
 from pycoords.address import Address
+from pycoords.backends import geocode_with_google_maps, geocode_with_nominatim
 
 
-def geocode_addresses(addresses: list) -> list:
+def get_api_key() -> str | None:
+    # TODO: @Aeinnor get api key from environmental variables
+    load_dotenv()
+
+    if api_key := environ.get("GOOGLE_MAPS_API_KEY"):
+        return api_key
+    else:
+        api_key = input("Enter your Google Maps API key: ")
+
+        # create .env file
+        with open(".env", "w") as f:
+            f.write(f"GOOGLE_MAPS_API_KEY={api_key}")
+
+    return api_key
+
+
+def geocode_addresses(addresses: list, engine="nominatim", api_key=None) -> list:
     """Geocodes a list of addresses.
 
     Args:
         addresses (list): A list of addresses.
+        engine (str, optional): The geocoding engine to use. Defaults to "nominatim".
 
     Returns:
         list: A list of addresses with the lat and lon attributes populated.
+
+    Raises:
+        ValueError: If the engine is not supported.
     """
+    engines = {
+        "nominatim": geocode_with_nominatim,
+        "google": geocode_with_google_maps,
+    }
+
+    backend = engines.get(engine)
+
+    if not backend:
+        raise SystemExit("Engine %s not supported", backend)
+
+    if engine == "google":
+        if not api_key:
+            api_key = get_api_key()
+
+        def backend(address):
+            return geocode_with_google_maps(address, api_key)
+
+        backend = backend
+
     if isinstance(addresses, Address):
         addresses = [addresses]
 
-    return [geocode(address) for address in addresses]
-
-
-def geocode_with_retry(max_attempts: int = 3, delay: int = 1) -> Callable:
-    """
-    A decorator that retries geocode if it fails.
-
-    Args:
-        max_attempts (int): The max attempts to geocode an address. Defaults to 3
-        delay (int): The number of seconds to wait between attempts. Defaults to 1.
-
-    Returns:
-        function: geocode function with retry logic.
-    """
-
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            attempts = 0
-            while attempts < max_attempts:
-                try:
-                    return func(*args, **kwargs)
-                except (GeocoderTimedOut, GeocoderUnavailable):
-                    std_sleep(delay)
-                    attempts += 1
-                    continue
-                except GeocoderQueryError:
-                    return args[0]  # return the address if it can't be geocoded
-
-        return wrapper
-
-    return decorator
-
-
-@geocode_with_retry()
-def geocode(address: Address) -> Address:
-    """
-    Geocodes an address using the Nominatim geocoder.
-
-    Args:
-        address (Address): The address to be geocoded.
-
-    Returns:
-        Address: A new address object with the lat and lon attributes populated.
-    """
-
-    geolocator = Nominatim(user_agent="pycoords")
-
-    # copy address to an internal mutable object
-    _address = address.copy()
-    _address_str = str(_address)
-
-    location = geolocator.geocode(_address_str)
-
-    # pylint doesn't like the latitude and longitude attributes
-    if location.latitude and location.longitude:  # type: ignore
-        _address.latitude = location.latitude  # type: ignore
-        _address.longitude = location.longitude  # type: ignore
-
-    return _address
+    return [backend(address) for address in addresses]
