@@ -72,19 +72,26 @@ def geocode_with_google_maps(address: Address, api_key=None) -> Address:
 
     params = {"address": str(address), "key": api_key}
 
-    # TODO: @Aeinnor catch invalid api key and timeouts
-    response = requests.get(base_url, params=params)
-    data = response.json()
+    try:
+        response = requests.get(base_url, params=params)
+        data = response.json()
 
-    if data["status"] == "OK" and data["results"]:
-        result = data["results"][0]
-        latitude = result["geometry"]["location"]["lat"]
-        longitude = result["geometry"]["location"]["lng"]
+        if data.get("status") == "OK" and data.get("results"):
+            result = data.get("results")[0]
+            latitude = result.get("geometry").get("location").get("lat")
+            longitude = result.get("geometry").get("location").get("lng")
 
-        address.latitude = latitude
-        address.longitude = longitude
+            address.latitude = latitude
+            address.longitude = longitude
 
-    return address
+        return address
+    except(
+        requests.RequestException,
+        requests.ConnectionError,
+        requests.HTTPError,
+        requests.Timeout,
+    ) as e:
+        return e
 
 
 # NOTE: If you wanna use this, provide AWS credentials
