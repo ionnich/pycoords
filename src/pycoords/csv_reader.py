@@ -1,5 +1,5 @@
-import os
 import csv
+import os
 
 
 def read_csv(file_name) -> list:
@@ -31,6 +31,8 @@ def read_csv(file_name) -> list:
                 "country_code": row.get("country_code"),
                 "postal_code": row.get("postal_code"),
                 "phone": row.get("phone"),
+                "latitude": row.get("latitude"),
+                "longitude": row.get("longitude"),
             }
         )
 

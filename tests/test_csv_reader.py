@@ -21,6 +21,8 @@ def test_read_csv(sample_csv):
             "country_code": "US",
             "postal_code": "19123",
             "phone": "8668488499",
+            "latitude": None,
+            "longitude": None,
         },
         {
             "name": "1933",
@@ -29,7 +31,9 @@ def test_read_csv(sample_csv):
             "state_code": "CA",
             "country_code": "US",
             "postal_code": "93308",
-            "phone": "(661) 829-5377"
+            "phone": "(661) 829-5377",
+            "latitude": None,
+            "longitude": None,
         },
         {
             "name": "013 - Tilburg",
@@ -39,6 +43,8 @@ def test_read_csv(sample_csv):
             "country_code": "NL",
             "postal_code": "",
             "phone": "",
+            "latitude": None,
+            "longitude": None,
         },
         {
             "name": "04 Center",
@@ -48,6 +54,8 @@ def test_read_csv(sample_csv):
             "country_code": "US",
             "postal_code": "78704",
             "phone": "(512) 333-0404",
+            "latitude": None,
+            "longitude": None,
         },
         {
             "name": "1 Hotel South Beach",
@@ -57,6 +65,8 @@ def test_read_csv(sample_csv):
             "country_code": "US",
             "postal_code": "33139",
             "phone": "3056041000",
+            "latitude": None,
+            "longitude": None,
         },
     ]
 

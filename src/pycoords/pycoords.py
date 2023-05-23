@@ -31,7 +31,9 @@ def is_csv(file_name):
 
 
 def file_exists(file_name):
-    return path.isfile(file_name)
+    # check if file exists in the current directory
+    file_name = path.join(path.dirname(__file__), file_name)
+    return path.exists(file_name)
 
 
 def setup_logging(loglevel):
@@ -40,10 +42,12 @@ def setup_logging(loglevel):
     Args:
       loglevel (int): minimum loglevel for emitting messages
     """
-    _logger.level("INFO")
-
+    _logger.remove()
+    level = "DEBUG" if loglevel else "INFO"
     if loglevel:
-        _logger.level(loglevel)
+        _logger.add("pycoords.log", level="DEBUG")
+
+    _logger.add(sys.stderr, level=level)
 
 
 def main(args):
@@ -61,34 +65,48 @@ def main(args):
         sys.exit(1)
 
     source_csv = args.source
-    
+
     if engine := args.engine:
         _logger.info("Using %s as geocoding engine" % engine)
 
-    # if not file_exists(source_csv):
-    #     _logger.error("%s is invalid" % source_csv)
-    #     sys.exit(1)
+    if not file_exists(source_csv):
+        _logger.error("%s is invalid" % source_csv)
+        sys.exit(1)
 
     unmapped_addresses: list = read_csv(source_csv)
-    total_unmapped = len(unmapped_addresses)
     addresses: list = dict_to_address(unmapped_addresses)
+
+    total_rows = len(unmapped_addresses)
+    total_unmapped = len(addresses)
+    _logger.debug("Addresses in %s : %d" % (source_csv, total_rows))
+    _logger.debug("Addresses to be geocoded: %d" % total_unmapped)
 
     parsed_addresses: list = geocode_addresses(
         addresses, engine=engine, parallel=args.parallel
     )
 
-    output_filename = source_csv.rstrip(".csv") + "_geocoded.csv"
-    if is_csv(args.output):
-        output_file = args.output if args.output != "geocoded.csv" else args.output
-    else:
-        _logger.warning("File extension must be .csv -> using %s" % output_filename)
+    _logger.debug("Processed addresses: %d" % len(parsed_addresses))
 
-    success_count: int = write_csv(parsed_addresses, output_filename, logger=_logger.warning)
+    output_filename = source_csv.rstrip(".csv") + "_geocoded.csv"
+    DEFAUlT_OUTPUT = "geocoded.csv"
+    if is_csv(args.output):
+        output_filename = (
+            args.output if args.output != DEFAUlT_OUTPUT else output_filename
+        )
+    else:
+        _logger.warning(
+            "Output file extension must be .csv -> using %s" % output_filename
+        )
+
+    success_count: int = write_csv(
+        parsed_addresses, output_filename, logger=_logger.warning
+    )
 
     _logger.info(
-        "Successfully geocoded %d/%d addresses to %s" % (
-            success_count, total_unmapped, output_filename)
+        "Successfully geocoded %d/%d addresses to %s"
+        % (success_count, total_unmapped, output_filename)
     )
+    _logger.info("Altered %d/%d addresses" % (success_count, total_rows))
 
 
 def run():

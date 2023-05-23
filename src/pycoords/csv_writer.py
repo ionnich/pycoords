@@ -1,8 +1,12 @@
 import os
 from csv import DictWriter
 
+from loguru import logger
 
-def write_csv(addresses: list, filename="geocoded_addresses.csv", logger=None) -> int:
+
+def write_csv(
+    addresses: list, filename="geocoded_addresses.csv", logger=logger.debug
+) -> int:
     """Writes the data found in a list of addresses into a csv file.
 
     Args:
@@ -19,19 +23,17 @@ def write_csv(addresses: list, filename="geocoded_addresses.csv", logger=None) -
         return count
 
     with open(filename, "w", newline="") as file:
-        first_address = addresses[0]
-        if first_address:
-            fieldnames = first_address.schema()["properties"].keys()
-        else:
-            logger("Addresses cannot be geocoded, please check your connection")
-            raise SystemExit()
+        fieldnames = addresses[0].schema()["properties"].keys()
+        # first_address = addresses[0]
+        # if first_address:
+        #     fieldnames = first_address.schema()["properties"].keys()
+        # else:
+        #     logger("Addresses cannot be geocoded, please check your connection")
+        #     raise SystemExit()
 
         writer = DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         for address in addresses:
-            if not address:
-                logger("Address could not be fetched, please check your connection")
-                continue
             if address.latitude != "" and address.longitude != "":
                 count += 1
 

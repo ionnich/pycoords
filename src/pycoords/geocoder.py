@@ -26,6 +26,7 @@ def parallel_processing(addresses: list, backend) -> list:
     workers = cpu_count()
     with ThreadPoolExecutor(max_workers=workers) as executor:
         results = executor.map(backend, addresses)
+
     return list(results)
 
 
