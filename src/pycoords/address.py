@@ -2,7 +2,6 @@ from pydantic import BaseModel, validator
 
 
 class Address(BaseModel):
-    # TODO: Address object must be 1 to 1 to the csv object aside from the coordinates
     """Address dataclass that corresponds to a venue address.
 
     Attributes:

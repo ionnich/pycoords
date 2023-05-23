@@ -2,7 +2,6 @@ from csv import DictWriter
 
 
 def write_csv(addresses: list, filename="geocoded_addresses.csv") -> int:
-    # TODO: @Aeinnor implement this
     """Writes the data found in a list of addresses into a csv file.
 
     Args:
