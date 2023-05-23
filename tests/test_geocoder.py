@@ -1,3 +1,6 @@
+import pytest
+import requests
+
 from pycoords.address import Address
 from pycoords.geocoder import geocode_addresses
 
@@ -32,6 +35,22 @@ t_dataset = [
 ]
 
 
+def google_maps_api(query: str, api_key: str):
+    base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+
+    params = {"address": query, "key": api_key}
+
+    response = requests.get(base_url, params=params)
+    data = response.json()
+
+    if data["status"] == "OK" and data["results"]:
+        result = data["results"][0]
+        latitude = result["geometry"]["location"]["lat"]
+        longitude = result["geometry"]["location"]["lng"]
+
+        return latitude, longitude
+
+
 def test_geocoder():
     from geopy.geocoders import Nominatim
 
@@ -42,10 +61,30 @@ def test_geocoder():
         "7900 Downing Ave, Bakersfield, CA 93308",
         "Veemarktstraat 44, 5038 CV, Tilburg, NL",
     ]
+    # NOTE: provide your own API key for testing
+    test_api_key = ""
 
-    test_locations = [geolocator.geocode(query) for query in test_queries]
-    mapped_addresses = geocode_addresses(t_dataset)
+    nominatim = geolocator.geocode
 
-    for i, address in enumerate(mapped_addresses):
-        assert address.latitude == test_locations[i].latitude  # type: ignore
-        assert address.longitude == test_locations[i].longitude  # type: ignore
+    def google(query):
+        return google_maps_api(query, test_api_key)
+
+    # NOTE: change respective backends for desired tests
+    backend = google
+    engine = "google"
+
+    test_locations = [backend(query) for query in test_queries]
+    mapped_addresses = geocode_addresses(t_dataset, engine=engine, api_key=test_api_key)
+
+    with pytest.raises(SystemExit):
+        geocode_addresses(t_dataset, engine="invalid")
+
+    if engine == "google" and backend == google:
+        for i, address in enumerate(mapped_addresses):
+            assert address.latitude == test_locations[i][0]
+            assert address.longitude == test_locations[i][1]
+
+    elif engine == "nominatim" and backend == nominatim:
+        for i, address in enumerate(mapped_addresses):
+            assert address.latitude == test_locations[i].latitude  # type: ignore
+            assert address.longitude == test_locations[i].longitude  # type: ignore
