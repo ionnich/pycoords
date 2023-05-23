@@ -1,15 +1,14 @@
-import argparse
 import re
 import sys
 from os import path
 
 from loguru import logger as _logger
 
-from pycoords.initialize import parse_args
 from pycoords.address_mapper import dict_to_address
 from pycoords.csv_reader import read_csv
 from pycoords.csv_writer import write_csv
 from pycoords.geocoder import geocode_addresses
+from pycoords.initialize import parse_args
 
 __author__ = "Aaron Gumapac, Aeinnor Reyes"
 __copyright__ = "Aaron Gumapac, Aeinnor Reyes"
@@ -56,17 +55,14 @@ def main(args):
     """
     args = parse_args(args)
     setup_logging(args.loglevel)
-    
+
     if not is_csv(args.source):
         _logger.error("Input is not a CSV file -> exiting")
         sys.exit(1)
 
     source_csv = args.source
-    
     if engine := args.engine:
         _logger.info("Using %s as geocoding engine", engine)
-    else:
-        engine = "nominatim"
 
     if not file_exists(source_csv):
         _logger.error("%s is invalid", source_csv)
@@ -75,11 +71,9 @@ def main(args):
     total_unmapped = len(unmapped_addresses)
     addresses: list = dict_to_address(unmapped_addresses)
 
-    try:
-        parsed_addresses: list = geocode_addresses(addresses, engine=engine)
-    except ValueError as e:
-        _logger.error(e)
-        sys.exit()
+    parsed_addresses: list = geocode_addresses(
+        addresses, engine=engine, parallel=args.parallel
+    )
 
     output_filename = f"{source_csv}_geocoded.csv"
     if is_csv(args.output):

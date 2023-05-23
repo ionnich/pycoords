@@ -46,7 +46,18 @@ def parse_args(args: list) -> argparse.Namespace:
         type=str,
         help="geocoding engine used",
         metavar="engine",
+        default="nominatim",
         required=False,
         choices=["nominatim", "google"],
+    )
+    parser.add_argument(
+        "-p",
+        "--parallel",
+        dest="parallel",
+        help="set parallel processing to True",
+        action="store_const",
+        default=False,
+        const="parallel",
+        required=False,
     )
     return parser.parse_args(args)

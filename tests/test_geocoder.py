@@ -32,6 +32,42 @@ t_dataset = [
         postal_code="",
         phone="",
     ),
+    Address(
+        name="714",
+        address="714 W. Girard Ave",
+        city="Philadelphia",
+        state_code="PA",
+        country_code="US",
+        postal_code="19123",
+        phone="8668488499",
+    ),
+    Address(
+        name="1933",
+        address="7900 Downing Ave",
+        city="Bakersfield",
+        state_code="CA",
+        country_code="US",
+        postal_code="93308",
+        phone="(661) 829-5377",
+    ),
+    Address(
+        name="013 - Tilburg",
+        address="Veemarktstraat 44, 5038 CV",
+        city="Tilburg",
+        state_code="",
+        country_code="NL",
+        postal_code="",
+        phone="",
+    ),
+]
+
+test_queries = [
+    "714 W. Girard Ave, Philadelphia, PA 19123",
+    "7900 Downing Ave, Bakersfield, CA 93308",
+    "Veemarktstraat 44, 5038 CV, Tilburg, NL",
+    "714 W. Girard Ave, Philadelphia, PA 19123",
+    "7900 Downing Ave, Bakersfield, CA 93308",
+    "Veemarktstraat 44, 5038 CV, Tilburg, NL",
 ]
 
 
@@ -56,11 +92,6 @@ def test_geocoder(monkeypatch):
 
     geolocator = Nominatim(user_agent="pycoords_test")
 
-    test_queries = [
-        "714 W. Girard Ave, Philadelphia, PA 19123",
-        "7900 Downing Ave, Bakersfield, CA 93308",
-        "Veemarktstraat 44, 5038 CV, Tilburg, NL",
-    ]
     # NOTE: provide your own API key for testing
     test_api_key = get_api_key()
 
