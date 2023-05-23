@@ -1,3 +1,4 @@
+import os
 import csv
 
 
@@ -10,6 +11,7 @@ def read_csv(file_name) -> list:
     Returns:
         list: A list of dictionaries that store the attributes of addresses.
     """
+    file_name = os.path.join(os.path.dirname(__file__), file_name)
     addresses = []
 
     try:
