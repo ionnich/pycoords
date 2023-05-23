@@ -27,6 +27,7 @@ def parse_args(args: list) -> argparse.Namespace:
         "-o",
         "--output",
         type=str,
+        default="geocoded.csv",
         help="file name of the output CSV",
         metavar="output_file",
         required=False,
