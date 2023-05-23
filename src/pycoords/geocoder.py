@@ -1,5 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
-from os import cpu_count, environ
+from os import cpu_count, getenv
 
 from dotenv import load_dotenv
 
@@ -8,10 +8,9 @@ from pycoords.backends import geocode_with_google_maps, geocode_with_nominatim
 
 
 def get_api_key() -> str | None:
-    # TODO: @Aeinnor get api key from environmental variables
     load_dotenv()
 
-    if api_key := environ.get("GOOGLE_MAPS_API_KEY"):
+    if api_key := getenv("GOOGLE_MAPS_API_KEY"):
         return api_key
     else:
         api_key = input("Enter your Google Maps API key: ")
