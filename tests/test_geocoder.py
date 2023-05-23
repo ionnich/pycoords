@@ -2,7 +2,7 @@ import pytest
 import requests
 
 from pycoords.address import Address
-from pycoords.geocoder import geocode_addresses
+from pycoords.geocoder import geocode_addresses, get_api_key
 
 t_dataset = [
     Address(
@@ -51,7 +51,7 @@ def google_maps_api(query: str, api_key: str):
         return latitude, longitude
 
 
-def test_geocoder():
+def test_geocoder(monkeypatch):
     from geopy.geocoders import Nominatim
 
     geolocator = Nominatim(user_agent="pycoords_test")
@@ -62,7 +62,7 @@ def test_geocoder():
         "Veemarktstraat 44, 5038 CV, Tilburg, NL",
     ]
     # NOTE: provide your own API key for testing
-    test_api_key = ""
+    test_api_key = get_api_key()
 
     nominatim = geolocator.geocode
 
@@ -74,7 +74,7 @@ def test_geocoder():
     engine = "google"
 
     test_locations = [backend(query) for query in test_queries]
-    mapped_addresses = geocode_addresses(t_dataset, engine=engine, api_key=test_api_key)
+    mapped_addresses = geocode_addresses(t_dataset, engine=engine)
 
     with pytest.raises(SystemExit):
         geocode_addresses(t_dataset, engine="invalid")
