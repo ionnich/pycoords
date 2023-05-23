@@ -31,7 +31,7 @@ def is_csv(file_name):
 
 
 def file_exists(file_name):
-    return path.isfile(file_name) is not None
+    return path.isfile(file_name)
 
 
 def setup_logging(loglevel):
@@ -61,11 +61,13 @@ def main(args):
         sys.exit(1)
 
     source_csv = args.source
+    
     if engine := args.engine:
-        _logger.info("Using %s as geocoding engine", engine)
+        _logger.info("Using %s as geocoding engine" % engine)
 
-    if not file_exists(source_csv):
-        _logger.error("%s is invalid", source_csv)
+    # if not file_exists(source_csv):
+    #     _logger.error("%s is invalid" % source_csv)
+    #     sys.exit(1)
 
     unmapped_addresses: list = read_csv(source_csv)
     total_unmapped = len(unmapped_addresses)
@@ -75,19 +77,17 @@ def main(args):
         addresses, engine=engine, parallel=args.parallel
     )
 
-    output_filename = f"{source_csv}_geocoded.csv"
+    output_filename = source_csv.rstrip(".csv") + "_geocoded.csv"
     if is_csv(args.output):
-        output_filename = args.output
+        output_file = args.output if args.output != "geocoded.csv" else args.output
     else:
-        _logger.warning("File extension must be .csv -> using %s", output_filename)
+        _logger.warning("File extension must be .csv -> using %s" % output_filename)
 
-    success_count: int = write_csv(parsed_addresses, output_filename)
+    success_count: int = write_csv(parsed_addresses, output_filename, logger=_logger.warning)
 
     _logger.info(
-        "Successfully geocoded %d/%d addresses to %s",
-        success_count,
-        total_unmapped,
-        output_filename,
+        "Successfully geocoded %d/%d addresses to %s" % (
+            success_count, total_unmapped, output_filename)
     )
 
 
