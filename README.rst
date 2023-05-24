@@ -30,7 +30,7 @@ Installation instructions
 
 Make sure that all dependencies are satisfied.
 
-Run ``pip install pycoords``
+Run ``pip install -i https://test.pypi.org/simple/ pycoords``
 
 Usage instructions
 ------------------
