@@ -7,7 +7,6 @@
 ========
 pycoords
 ========
-
 A python package that generates coordinates given addresses.
 
 This project takes a CSV file that stores addresses as input, then 
