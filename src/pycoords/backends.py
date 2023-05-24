@@ -8,10 +8,6 @@ from requests_ip_rotator import ApiGateway
 from pycoords.address import Address
 
 
-def is_geocoded(address: Address):
-    return address.latitude != "" and address.longitude != ""
-
-
 def geocode_with_nominatim(address: Address, attempts=3) -> Address:
     """
     Geocodes an address using the Nominatim geocoder.
@@ -22,9 +18,6 @@ def geocode_with_nominatim(address: Address, attempts=3) -> Address:
     Returns:
         Address: A new address object with the lat and lon attributes populated.
     """
-    if is_geocoded(address):
-        return address
-
     if attempts <= 0:
         return address
 
@@ -43,9 +36,13 @@ def geocode_with_nominatim(address: Address, attempts=3) -> Address:
         return address  # return address if geocoding is impossibe
 
     # pylint doesn't like the latitude and longitude attributes
-    if not location or (location.latitude and location.longitude):  # type: ignore
-        _address.latitude = location.latitude  # type: ignore
-        _address.longitude = location.longitude  # type: ignore
+    if not location:
+        return _address
+    if not location.latitude or not location.longitude:  # type: ignore
+        return _address
+
+    _address.latitude = location.latitude  # type: ignore
+    _address.longitude = location.longitude  # type: ignore
 
     return _address
 
@@ -53,6 +50,7 @@ def geocode_with_nominatim(address: Address, attempts=3) -> Address:
 def geocode_with_google_maps(address: Address, api_key=None, attempts=3) -> Address:
     """
     Geocodes an address using the Google Maps API.
+    The function recursively calls 3 times itself if the API returns an error.
 
 
     Args:
@@ -64,9 +62,6 @@ def geocode_with_google_maps(address: Address, api_key=None, attempts=3) -> Addr
     """
 
     if attempts <= 0:
-        return address
-
-    if is_geocoded(address):
         return address
 
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
@@ -92,7 +87,7 @@ def geocode_with_google_maps(address: Address, api_key=None, attempts=3) -> Addr
         requests.HTTPError,
         requests.Timeout,
     ):
-        return geocode_with_google_maps(address, attempts=attempts-1)
+        return geocode_with_google_maps(address, attempts=attempts - 1)
     return _address
 
 
@@ -107,9 +102,6 @@ def geocode_with_ip_rotation(address: Address) -> Address:
     Returns:
         Address: A new address object with the lat and lon attributes populated.
     """
-    if is_geocoded(address):
-        return address
-
     url = "https://nominatim.openstreetmap.org/search"
 
     # Create gateway object and initialize in AWS

@@ -101,19 +101,19 @@ def test_geocoder(monkeypatch):
         return google_maps_api(query, test_api_key)
 
     # NOTE: change respective backends for desired tests
-    backend = google
-    engine = "google"
+    backend = nominatim
+    engine = "nominatim"
 
     test_locations = [backend(query) for query in test_queries]
-    mapped_addresses = geocode_addresses(t_dataset, engine=engine, parallel=True)
+    mapped_addresses, _ = geocode_addresses(t_dataset, engine=engine, parallel=True)
 
     with pytest.raises(SystemExit):
         geocode_addresses(t_dataset, engine="invalid")
 
     if engine == "google" and backend == google:
         for i, address in enumerate(mapped_addresses):
-            assert address.latitude == test_locations[i][0]
-            assert address.longitude == test_locations[i][1]
+            assert address.latitude == test_locations[i][0]  # type: ignore
+            assert address.longitude == test_locations[i][1]  # type: ignore
 
     elif engine == "nominatim" and backend == nominatim:
         for i, address in enumerate(mapped_addresses):

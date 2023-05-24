@@ -42,9 +42,11 @@ def parallel_processing(addresses: list, backend) -> list:
         list: A list of addresses with the lat and lon attributes populated.
     """
     workers = cpu_count()
+
     pbar_title = f"Concurrently processing with {workers} cores"
     bar_style = "filling"
     spinner_style = "notes"
+
     with ThreadPoolExecutor(max_workers=workers) as executor:
         futures = [executor.submit(backend, address) for address in addresses]
         results = list()
@@ -74,10 +76,48 @@ def single_threaded_processing(addresses: list, backend) -> list:
     return [backend(address) for address in addresses]
 
 
-def geocode_addresses(
+def remove_geocoded(addresses: list) -> tuple:
+    """
+    Removes addresses that have already been geocoded.
+
+    Args:
+        addresses (list): A list of addresses.
+
+    Returns:
+        tuple: a list of unparsed addresses and their indices
+    """
+
+    unparsed_addresses = list()
+    indices = list()
+
+    for index, address in enumerate(addresses):
+        if not address.latitude and not address.longitude:
+            unparsed_addresses.append(address)
+            indices.append(index)
+
+    return unparsed_addresses, indices
+
+
+def get_position_in(addresses: list, address: Address) -> int:
+    """
+    Gets the position of an address in a list of addresses.
+
+    Args:
+        addresses (list): A list of addresses.
+        address (Address): The address to find.
+
+    Returns:
+        int: The position of the address in the list of addresses.
+    """
+    print("getting index")
+    return addresses.index(address)
+
+
+def generate_coordinates(
     addresses: list, engine="nominatim", api_key=None, parallel=True
 ) -> list:
-    """Geocodes a list of addresses.
+    """
+    Wrapper for geocoding functions.
 
     Args:
         addresses (list): A list of addresses.
@@ -87,9 +127,8 @@ def geocode_addresses(
 
     Returns:
         list: A list of addresses with the lat and lon attributes populated.
-
     Raises:
-        ValueError: If the engine is not supported.
+        SystemExit: If the engine is not supported.
     """
 
     engines = {
@@ -99,11 +138,6 @@ def geocode_addresses(
 
     if engine not in engines:
         raise SystemExit("Engine %s not supported" % engine)
-
-    if isinstance(addresses, Address):
-        addresses = [addresses]
-
-    _queue = [address.copy() for address in addresses]
 
     backend = engines[engine]
 
@@ -120,6 +154,44 @@ def geocode_addresses(
         parallel = False
 
     if parallel:
-        return parallel_processing(_queue, backend)
+        return parallel_processing(addresses, backend)
 
-    return single_threaded_processing(_queue, backend)
+    return single_threaded_processing(addresses, backend)
+
+
+def geocode_addresses(
+    addresses: list, engine="nominatim", api_key=None, parallel=True
+) -> tuple:
+    """Geocodes a list of addresses.
+
+    Args:
+        addresses (list): A list of addresses.
+        engine (str, optional): The geocoding engine to use. Defaults to "nominatim".
+        api_key (str, optional): The Google Maps API key. Defaults to None.
+        parallel (bool, optional): Whether to use parallel processing. Defaults to True.
+
+    Returns:
+        tuple: A tuple containing a list of addresses and a count of geocoded addresses
+
+    Raises:
+        ValueError: If the engine is not supported.
+    """
+
+    if isinstance(addresses, Address):
+        addresses = [addresses]
+
+    _queue = list(addresses)
+
+    _unparsed_queue, _unparsed_indices = remove_geocoded(_queue)
+    _unparsed_queue = generate_coordinates(_unparsed_queue, engine, api_key, parallel)
+
+    success_counter = 0
+    for item in _unparsed_queue:
+        if item.latitude and item.longitude:
+            success_counter += 1
+
+    # Combine the parsed and unparsed addresses while preserving the order
+    for index in _unparsed_indices:
+        _queue[index] = _unparsed_queue.pop(0)
+
+    return (_queue, success_counter)

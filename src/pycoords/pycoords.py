@@ -1,6 +1,7 @@
 import re
 import sys
 from os import path
+from time import perf_counter
 
 from loguru import logger as _logger
 
@@ -73,24 +74,20 @@ def main(args):
         _logger.error("%s is invalid -> exiting" % source_csv)
         sys.exit(1)
 
+    start = perf_counter()
     csv_rows: list = read_csv(source_csv)
-    addresses: list = dict_to_address(csv_rows)
-    unparsed_addresses = [
-        address
-        for address in addresses
-        if not address.latitude or not address.longitude
-    ]
-
     total_rows = len(csv_rows)
-    total_unparsed = len(unparsed_addresses)
-    _logger.debug("Addresses in %s : %d" % (source_csv, total_rows))
-    _logger.debug("Addresses to be geocoded: %d" % total_unparsed)
-
-    parsed_addresses: list = geocode_addresses(
-        addresses, engine=engine, parallel=args.parallel
+    _logger.debug("Reading %d rows from %s" % (total_rows, source_csv))
+    addresses: list = dict_to_address(csv_rows)
+    total_addresses = len(addresses)
+    _logger.debug(
+        "Number of Address objects instantiated in memory %d" % total_addresses
     )
 
-    _logger.debug("Processed addresses: %d" % len(parsed_addresses))
+    parsed_addresses, total_parsed = geocode_addresses(
+        addresses, engine=engine, parallel=args.parallel
+    )
+    _logger.info("Processed addresses: %d/%d" % (total_parsed, total_rows))
 
     output_filename = source_csv.rstrip(".csv") + "_geocoded.csv"
     DEFAUlT_OUTPUT = "geocoded.csv"
@@ -104,12 +101,12 @@ def main(args):
         )
 
     success_count: int = write_csv(parsed_addresses, output_filename)
-
+    end = perf_counter()
     _logger.info(
-        "Successfully geocoded %d/%d addresses to %s"
-        % (success_count, total_unparsed, output_filename)
+        "%d/%d addresses now have coordinates in %s"
+        % (success_count, total_rows, output_filename)
     )
-    _logger.info("Altered %d/%d addresses" % (success_count, total_rows))
+    _logger.debug("Finished in: %.2f seconds" % (end - start))
 
 
 def run():
@@ -117,9 +114,4 @@ def run():
 
 
 if __name__ == "__main__":
-    # NOTE:
-    # After installing your project with pip, users can also run your Python
-    # modules as scripts via the ``-m`` flag, as defined in PEP 338::
-    #     python -m pycoords.skeleton 42
-    #
     run()
