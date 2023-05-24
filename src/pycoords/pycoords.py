@@ -73,18 +73,18 @@ def main(args):
         _logger.error("%s is invalid -> exiting" % source_csv)
         sys.exit(1)
 
-    unmapped_addresses: list = read_csv(source_csv)
-    addresses: list = dict_to_address(unmapped_addresses)
+    csv_rows: list = read_csv(source_csv)
+    addresses: list = dict_to_address(csv_rows)
     unparsed_addresses = [
         address
         for address in addresses
         if not address.latitude or not address.longitude
     ]
 
-    total_rows = len(unmapped_addresses)
-    total_unmapped = len(unparsed_addresses)
+    total_rows = len(csv_rows)
+    total_unparsed = len(unparsed_addresses)
     _logger.debug("Addresses in %s : %d" % (source_csv, total_rows))
-    _logger.debug("Addresses to be geocoded: %d" % total_unmapped)
+    _logger.debug("Addresses to be geocoded: %d" % total_unparsed)
 
     parsed_addresses: list = geocode_addresses(
         addresses, engine=engine, parallel=args.parallel
@@ -107,7 +107,7 @@ def main(args):
 
     _logger.info(
         "Successfully geocoded %d/%d addresses to %s"
-        % (success_count, total_unmapped, output_filename)
+        % (success_count, total_unparsed, output_filename)
     )
     _logger.info("Altered %d/%d addresses" % (success_count, total_rows))
 
