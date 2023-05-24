@@ -1,56 +1,34 @@
-# from csv import DictReader, DictWriter
-# import pytest
-# from pycoords.coordinates import geocode
-# from pycoords.pycoords import fib, main
-from pycoords.pycoords import is_csv
+import os
+import csv
+from pycoords.pycoords import is_csv, main
 
-__author__ = "Aaron Gumapac, Aeinnor Reyes"
-__copyright__ = "Aaron Gumapac, Aeinnor Reyes"
-__license__ = "MIT"
-
-test_rows = [
-    "Maddison Square Garden, 123 Main St, Anytown, CA, 12345, USA, 38.1234, -121.1234",
-    "Maddison Square Garden, 123 Main St, Anytown, CA, 12345, USA",
-    "Maddison Square Garden, 123 Main St, Anytown, CA, 12345",
-    "Maddison Square Garden, 123 Main St, Anytown, CA",
-    "Maddison Square Garden, 123 Main St",
-    "Maddison Square Garden",
-]
-
-# create test csv file containing test_rows
-with open("test.csv", "w") as f:
-    fieldnames = [
-        "name",
-        "address",
-        "city",
-        "state_code",
-        "postal_code",
-        "country_code",
-        "latitude",
-        "longitude",
-    ]
-    f.write(",".join(fieldnames) + "\n")
-    for row in test_rows:
-        f.write(row + "\n")
+test_dir = os.path.dirname(os.path.abspath(__file__))
+default_test_path = os.path.join(test_dir, "default_geocoded.csv")
 
 
-# def test_address_from_string():
-#     with open("test.csv", "r") as f:
-#         reader = DictReader(f)
-#         for row in reader:
-#             address = Address()
-#             address.add_name(row["name"]).add_address(row["address"]).add_city(
-#                 row["city"]
-#             ).add_state_code(row["state_code"]).add_postal_code(
-#                 row["postal_code"]
-#             ).add_country_code(
-#                 row["country_code"]
-#             ).add_latitude(
-#                 row.get("latitude")
-#             ).add_longitude(
-#                 row["longitude"]
-#             )
+def csv_reader(file_path):
+    with open(file_path, "r") as file:
+        reader = csv.DictReader(file)
+        data = [row for row in reader]
+
+    return data
+
 
 def test_is_csv():
     assert is_csv("sample.csv") == True
     assert is_csv("text.txt") == False
+
+
+def test_main():
+    input_sample = os.path.join(test_dir, "sample.csv")
+
+    # testing default behavior (only required fields provided)
+    arguments = ["-s", input_sample]
+    main(arguments)
+
+    csv_file_path = os.path.join(test_dir, "sample_geocoded.csv")
+
+    test_default_file = csv_reader(csv_file_path)
+    default_test_data = csv_reader(default_test_path)
+
+    assert test_default_file == default_test_data
