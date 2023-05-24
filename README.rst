@@ -1,49 +1,55 @@
-.. These are examples of badges you might want to add to your README:
-   please update the URLs accordingly
-
-    .. image:: https://api.cirrus-ci.com/github/<USER>/pycoords.svg?branch=main
-        :alt: Built Status
-        :target: https://cirrus-ci.com/github/<USER>/pycoords
-    .. image:: https://readthedocs.org/projects/pycoords/badge/?version=latest
-        :alt: ReadTheDocs
-        :target: https://pycoords.readthedocs.io/en/stable/
-    .. image:: https://img.shields.io/coveralls/github/<USER>/pycoords/main.svg
-        :alt: Coveralls
-        :target: https://coveralls.io/r/<USER>/pycoords
-    .. image:: https://img.shields.io/pypi/v/pycoords.svg
-        :alt: PyPI-Server
-        :target: https://pypi.org/project/pycoords/
-    .. image:: https://img.shields.io/conda/vn/conda-forge/pycoords.svg
-        :alt: Conda-Forge
-        :target: https://anaconda.org/conda-forge/pycoords
-    .. image:: https://pepy.tech/badge/pycoords/month
-        :alt: Monthly Downloads
-        :target: https://pepy.tech/project/pycoords
-    .. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter
-        :alt: Twitter
-        :target: https://twitter.com/pycoords
-
 .. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
     :alt: Project generated with PyScaffold
     :target: https://pyscaffold.org/
-
 |
-
 ========
 pycoords
 ========
+A python package that generates coordinates given addresses.
 
+This project takes a CSV file that stores addresses as input, then 
+returns a new CSV file complete with the locations' coordinates. The
+user has the option to change the engine used by the program to scrape
+the coordinates.
 
-    A python package that generates coordinates given addresses.
+Dependencies
+------------
 
+-  python 3.10+
+-  tox
+-  pydantic
+-  geopy
+-  loguru
+-  requests
+-  python-dotenv
+-  requests-ip-rotator
+-  alive_progress
 
-A longer description of your project goes here...
+Installation instructions
+-------------------------
+Make sure that all dependencies are satisfied. 
 
+Run ``pip install pycoords``
 
-.. _pyscaffold-notes:
+Usage instructions
+------------------
+
+Run ``pycoords -h`` to see the usage.
+
+.. code:: python
+
+     usage: pycoords [-h] -s source_output [-o output_file] [-v] [-e engine] [-p]
+
+::
+
+   -s File name of the input CSV | [-s file_name.csv]
+   -o File name of the output | [-o output_file.csv]
+   -v If provided, debug logging is enabled
+   -e If provided, engine used to scrape coordinates is changed | [-e nominatim] or [-e google]
+   -p If provided, sets parallel processing to true
 
 Making Changes & Contributing
-=============================
+-----------------------------
 
 This project uses `pre-commit`_, please make sure to install it before making any
 changes::
@@ -55,13 +61,3 @@ changes::
 It is a good idea to update the hooks to the latest version::
 
     pre-commit autoupdate
-
-Don't forget to tell your contributors to also install and use pre-commit.
-
-.. _pre-commit: https://pre-commit.com/
-
-Note
-====
-
-This project has been set up using PyScaffold 4.4.1. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
