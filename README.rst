@@ -7,7 +7,7 @@ pycoords
 
 A python package that generates coordinates given addresses.
 
-This project takes a CSV file that stores addresses as input, then 
+This project takes a CSV file that stores addresses as input, then
 returns a new CSV file complete with the locations' coordinates. The
 user has the option to change the engine used by the program to scrape
 the coordinates.
@@ -28,7 +28,7 @@ Dependencies
 Installation instructions
 -------------------------
 
-Make sure that all dependencies are satisfied. 
+Make sure that all dependencies are satisfied.
 
 Run ``pip install pycoords``
 
@@ -50,7 +50,7 @@ Run ``pycoords -h`` to see the usage.
 Making Changes & Contributing
 -----------------------------
 
-This project uses `pre-commit`_, please make sure to install it before making any
+This project uses ``pre-commit``, please make sure to install it before making any
 changes::
 
     pip install pre-commit
