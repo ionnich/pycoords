@@ -70,7 +70,7 @@ def main(args):
         _logger.info("Using %s as geocoding engine" % engine)
 
     if not file_exists(source_csv):
-        _logger.error("%s is invalid" % source_csv)
+        _logger.error("%s is invalid -> exiting" % source_csv)
         sys.exit(1)
 
     unmapped_addresses: list = read_csv(source_csv)
@@ -110,7 +110,7 @@ def main(args):
 def run():
     """Calls :func:`main` passing the CLI arguments extracted from :obj:`sys.argv`
 
-    This function iss used as entry point to create console scripts with setuptools.
+    This function is used as entry point to create console scripts with setuptools.
     """
     main(sys.argv[1:])
 
