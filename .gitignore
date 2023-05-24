@@ -7,7 +7,6 @@
 !setup.cfg
 *.orig
 *.log
-*.csv
 *.pot
 __pycache__/*
 .cache/*
