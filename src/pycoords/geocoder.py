@@ -47,19 +47,18 @@ def geocode_addresses(
     Raises:
         ValueError: If the engine is not supported.
     """
-
-    if isinstance(addresses, Address):
-        addresses = [addresses]
-
     engines = {
         "nominatim": geocode_with_nominatim,
         "google": geocode_with_google_maps,
     }
 
-    backend = engines.get(engine)
+    if isinstance(addresses, Address):
+        addresses = [addresses]
 
-    if not backend:
-        raise SystemExit("Engine %s not supported", backend)
+    if engine not in engines:
+        raise SystemExit("Engine %s not supported" % engine)
+
+    backend = engines[engine]
 
     if engine == "google":
         if not api_key:

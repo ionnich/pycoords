@@ -98,9 +98,7 @@ def main(args):
             "Output file extension must be .csv -> using %s" % output_filename
         )
 
-    success_count: int = write_csv(
-        parsed_addresses, output_filename, logger=_logger.warning
-    )
+    success_count: int = write_csv(parsed_addresses, output_filename)
 
     _logger.info(
         "Successfully geocoded %d/%d addresses to %s"

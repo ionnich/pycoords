@@ -54,11 +54,11 @@ class Address(BaseModel):
 
         ignored_keys = ["phone", "name"]
 
-        def remove_phone_and_empty_str(dictionary_item):
+        def ignore_fields(dictionary_item):
             key, value = dictionary_item
             return value != "" and key not in ignored_keys
 
-        geocoding_fields = dict(filter(remove_phone_and_empty_str, self.dict().items()))
+        geocoding_fields = dict(filter(ignore_fields, self.dict().items()))
         accumulator = ", ".join(geocoding_fields.values())
 
         # remove trailing comma
