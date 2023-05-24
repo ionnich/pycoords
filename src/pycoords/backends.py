@@ -50,7 +50,7 @@ def geocode_with_nominatim(address: Address, attempts=3) -> Address:
     return _address
 
 
-def geocode_with_google_maps(address: Address, api_key=None) -> Address:
+def geocode_with_google_maps(address: Address, api_key=None, attempts=3) -> Address:
     """
     Geocodes an address using the Google Maps API.
 
@@ -62,6 +62,9 @@ def geocode_with_google_maps(address: Address, api_key=None) -> Address:
     Returns:
         Address: A new address object with the lat and lon attributes populated.
     """
+
+    if attempts <= 0:
+        return address
 
     if is_geocoded(address):
         return address
@@ -83,14 +86,14 @@ def geocode_with_google_maps(address: Address, api_key=None) -> Address:
             _address.latitude = latitude
             _address.longitude = longitude
 
-        return _address
     except (
         requests.RequestException,
         requests.ConnectionError,
         requests.HTTPError,
         requests.Timeout,
-    ) as e:
-        raise e
+    ):
+        return geocode_with_google_maps(address, attempts=attempts-1)
+    return _address
 
 
 # NOTE: If you wanna use this, provide AWS credentials
