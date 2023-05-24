@@ -31,7 +31,7 @@ def is_csv(file_name):
 
 
 def file_exists(file_name):
-    # check if file exists in the current directory
+    """Checks if a file exists in current directory"""
     file_name = path.join(path.dirname(__file__), file_name)
     return path.exists(file_name)
 
@@ -75,9 +75,14 @@ def main(args):
 
     unmapped_addresses: list = read_csv(source_csv)
     addresses: list = dict_to_address(unmapped_addresses)
+    unparsed_addresses = [
+        address
+        for address in addresses
+        if not address.latitude or not address.longitude
+    ]
 
     total_rows = len(unmapped_addresses)
-    total_unmapped = len(addresses)
+    total_unmapped = len(unparsed_addresses)
     _logger.debug("Addresses in %s : %d" % (source_csv, total_rows))
     _logger.debug("Addresses to be geocoded: %d" % total_unmapped)
 
@@ -108,10 +113,6 @@ def main(args):
 
 
 def run():
-    """Calls :func:`main` passing the CLI arguments extracted from :obj:`sys.argv`
-
-    This function is used as entry point to create console scripts with setuptools.
-    """
     main(sys.argv[1:])
 
 

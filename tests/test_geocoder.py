@@ -105,7 +105,7 @@ def test_geocoder(monkeypatch):
     engine = "google"
 
     test_locations = [backend(query) for query in test_queries]
-    mapped_addresses = geocode_addresses(t_dataset, engine=engine)
+    mapped_addresses = geocode_addresses(t_dataset, engine=engine, parallel=True)
 
     with pytest.raises(SystemExit):
         geocode_addresses(t_dataset, engine="invalid")

@@ -14,8 +14,4 @@ def dict_to_address(dictionaries: list | dict) -> list:
     if isinstance(dictionaries, dict):  # if only one dictionary is passed
         dictionaries = [dictionaries]
 
-    return [
-        Address(**row)
-        for row in dictionaries
-        if not row.get("latitude") and not row.get("longitude")
-    ]
+    return [Address(**row) for row in dictionaries]
