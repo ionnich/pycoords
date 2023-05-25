@@ -60,23 +60,23 @@ Run ``pycoords -h`` to see the usage.
       # Ex: [-p]
 
 Usecases
-------------------
+========
 
 - Geocoding coordinates from a CSV file (default behavior)
-    .. code:: python
-      pycoords -s source.csv -o output.csv
+  .. code:: python
+    pycoords -s source.csv -o output.csv
 
 - Geocoding coordinates from a CSV file with debug logging
-    .. code:: python
-      pycoords -s source.csv -o output.csv -v
+  .. code:: python
+    pycoords -s source.csv -o output.csv -v
 
 - Using parallel processing with google maps api
-    .. code:: python
-      pycoords -s source.csv -o output.csv -e google -p
+  .. code:: python
+    pycoords -s source.csv -o output.csv -e google -p
 
 
 Cyclomatic Complexity testing with Radon
-------------------
+========================================
 
 .. code:: python
    ➜ radon cc src/pycoords/ -a
