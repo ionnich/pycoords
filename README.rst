@@ -2,6 +2,15 @@
     :alt: Project generated with PyScaffold
     :target: https://pyscaffold.org/
 
+.. image:: https://img.shields.io/badge/License-MIT-blue.svg
+    :target: https://opensource.org/licenses/MIT
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target:
+
+.. image:: https://img.shields.io/badge/code%20style-flake8-black
+    :target:
+
 pycoords
 ========
 
