@@ -67,8 +67,8 @@ Usecases
     pycoords -s source.csv -o output.csv
 
 - Geocoding coordinates from a CSV file with debug logging
-  .. code:: python
-    pycoords -s source.csv -o output.csv -v
+.. code:: python
+  pycoords -s source.csv -o output.csv -v
 
 - Using parallel processing with google maps api
   .. code:: python
@@ -79,6 +79,7 @@ Cyclomatic Complexity testing with Radon
 ========================================
 
 .. code:: python
+
    ➜ radon cc src/pycoords/ -a
   src/pycoords/address_mapper.py
       F 4:0 dict_to_address - A
