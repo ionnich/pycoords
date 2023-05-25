@@ -61,6 +61,7 @@ Run ``pycoords -h`` to see the usage.
 
 Usecases
 ------------------
+
 - Geocoding coordinates from a CSV file (default behavior)
     .. code:: python
       pycoords -s source.csv -o output.csv
@@ -76,6 +77,7 @@ Usecases
 
 Cyclomatic Complexity testing with Radon
 ------------------
+
 .. code:: python
    ➜ radon cc src/pycoords/ -a
   src/pycoords/address_mapper.py
