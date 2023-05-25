@@ -51,7 +51,7 @@ Run ``pycoords -h`` to see the usage.
     -v
       # If provided, debug logging is enabled
     -e
-      # If provided, engine used to scrape coordinates is changed
+      # If provided, engine used to geocode coordinates is changed
       # Options: google, nominatim
       # Ex: [-e google]
     -p
@@ -61,21 +61,56 @@ Run ``pycoords -h`` to see the usage.
 
 Usecases
 ------------------
-- Scraping coordinates from a CSV file
-  .. code:: python
+- Geocoding coordinates from a CSV file (default behavior)
+    .. code:: python
+      pycoords -s source.csv -o output.csv
 
-    pycoords -s source.csv -o output.csv
+- Geocoding coordinates from a CSV file with debug logging
+    .. code:: python
+      pycoords -s source.csv -o output.csv -v
 
-- Scraping coordinates from a CSV file using the google engine
-  .. code:: python
+- Using parallel processing with google maps api
+    .. code:: python
+      pycoords -s source.csv -o output.csv -e google -p
 
-    pycoords -s source.csv -o output.csv -e google
 
-- Scraping coordinates from a CSV file using the google engine with parallel processing
-  .. code:: python
+Cyclomatic Complexity testing with Radon
+------------------
+.. code:: python
+   ➜ radon cc src/pycoords/ -a
+  src/pycoords/address_mapper.py
+      F 4:0 dict_to_address - A
+  src/pycoords/address.py
+      C 4:0 Address - A
+      M 20:4 Address.none_to_empty - A
+      M 47:4 Address.__str__ - A
+  src/pycoords/initialize.py
+      F 4:0 parse_args - A
+  src/pycoords/csv_reader.py
+      F 5:0 read_csv - A
+  src/pycoords/csv_writer.py
+      F 5:0 write_csv - A
+  src/pycoords/backends.py
+      F 11:0 geocode_with_nominatim - B
+      F 50:0 geocode_with_google_maps - A
+      F 95:0 geocode_with_ip_rotation - A
+  src/pycoords/geocoder.py
+      F 162:0 geocode_addresses - B
+      F 116:0 generate_coordinates - A
+      F 79:0 remove_geocoded - A
+      F 33:0 parallel_processing - A
+      F 12:0 get_api_key - A
+      F 63:0 single_threaded_processing - A
+      F 101:0 get_position_in - A
+  src/pycoords/pycoords.py
+      F 54:0 main - B
+      F 40:0 setup_logging - A
+      F 21:0 is_csv - A
+      F 34:0 file_exists - A
+      F 112:0 run - A
 
-    pycoords -s source.csv -o output.csv -e google -p
-
+  22 blocks (classes, functions, methods) analyzed.
+  Average complexity: A (3.272727272727273)
 
 
 Making Changes & Contributing
