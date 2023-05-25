@@ -63,8 +63,8 @@ Usecases
 ========
 
 - Geocoding coordinates from a CSV file (default behavior)
-  .. code:: python
-    pycoords -s source.csv -o output.csv
+.. code:: python
+  pycoords -s source.csv -o output.csv
 
 - Geocoding coordinates from a CSV file with debug logging
 .. code:: python
