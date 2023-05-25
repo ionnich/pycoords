@@ -62,6 +62,8 @@ Run ``pycoords -h`` to see the usage.
 Usecases
 ========
 
+A few examples of how to use the package.
+
 .. code:: python
   # Geocoding coordinates from a CSV file (default behavior)
   pycoords -s source.csv -o output.csv
