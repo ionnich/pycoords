@@ -1,6 +1,6 @@
 import re
 import sys
-from os import path
+from os import chdir, getcwd, path
 from time import perf_counter
 
 from loguru import logger as _logger
@@ -33,7 +33,11 @@ def is_csv(file_name):
 
 def file_exists(file_name):
     """Checks if a file exists in current directory"""
-    file_name = path.join(path.dirname(__file__), file_name)
+    current_dir = path.abspath(getcwd())
+    pycoords_dir = path.dirname(path.abspath(__file__))
+    file_name = path.join(current_dir, file_name)
+    _logger.debug("Locating file in: ...%s" % file_name[5:])
+    _logger.debug("Locating dir in: ...%s" % pycoords_dir)
     return path.exists(file_name)
 
 
@@ -67,8 +71,11 @@ def main(args):
 
     source_csv = args.source
 
+    current_dir = path.abspath(getcwd())
+    source_csv = path.join(current_dir, source_csv)
+
     if engine := args.engine:
-        _logger.info("Using %s as geocoding engine" % engine)
+        _logger.info("Using %s as engine" % engine)
 
     if not file_exists(source_csv):
         _logger.error("%s is invalid -> exiting" % source_csv)
@@ -110,6 +117,10 @@ def main(args):
 
 
 def run():
+    # change working directory to current directory
+    running_directory = getcwd()
+    chdir(running_directory)
+    _logger.debug("Pycoords is running in: %s" % running_directory)
     main(sys.argv[1:])
 
 

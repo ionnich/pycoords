@@ -1,5 +1,6 @@
-import os
 import csv
+import os
+
 from pycoords.pycoords import is_csv, main
 
 test_dir = os.path.dirname(os.path.abspath(__file__))
@@ -15,8 +16,8 @@ def csv_reader(file_path):
 
 
 def test_is_csv():
-    assert is_csv("sample.csv") == True
-    assert is_csv("text.txt") == False
+    assert is_csv("sample.csv") is True
+    assert is_csv("text.txt") is False
 
 
 def test_main():

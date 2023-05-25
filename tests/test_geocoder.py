@@ -4,6 +4,8 @@ import requests
 from pycoords.address import Address
 from pycoords.geocoder import geocode_addresses, get_api_key
 
+# TODO: verify that tests are running
+
 t_dataset = [
     Address(
         name="714",
@@ -87,35 +89,31 @@ def google_maps_api(query: str, api_key: str):
         return latitude, longitude
 
 
-def test_geocoder(monkeypatch):
+def test_geocoder():
     from geopy.geocoders import Nominatim
-
-    geolocator = Nominatim(user_agent="pycoords_test")
 
     # NOTE: provide your own API key for testing
     test_api_key = get_api_key()
+
+    geolocator = Nominatim(user_agent="pycoords_test")
 
     nominatim = geolocator.geocode
 
     def google(query):
         return google_maps_api(query, test_api_key)
 
-    # NOTE: change respective backends for desired tests
-    backend = nominatim
-    engine = "nominatim"
-
-    test_locations = [backend(query) for query in test_queries]
-    mapped_addresses, _ = geocode_addresses(t_dataset, engine=engine, parallel=True)
-
     with pytest.raises(SystemExit):
         geocode_addresses(t_dataset, engine="invalid")
 
-    if engine == "google" and backend == google:
-        for i, address in enumerate(mapped_addresses):
-            assert address.latitude == test_locations[i][0]  # type: ignore
-            assert address.longitude == test_locations[i][1]  # type: ignore
+    engine = "nominatim"
+    nominatim_set = [nominatim(query) for query in test_queries]
+    mapped_addresses, _ = geocode_addresses(t_dataset, engine=engine, parallel=True)
+    for i, address in enumerate(mapped_addresses):
+        assert address.latitude == nominatim_set[i][0]  # type: ignore
+        assert address.longitude == nominatim_set[i][1]  # type: ignore
 
-    elif engine == "nominatim" and backend == nominatim:
-        for i, address in enumerate(mapped_addresses):
-            assert address.latitude == test_locations[i].latitude  # type: ignore
-            assert address.longitude == test_locations[i].longitude  # type: ignore
+    engine = "google"
+    google_set = [google(query) for query in test_queries]
+    for i, address in enumerate(mapped_addresses):
+        assert address.latitude == google_set[i].latitude  # type: ignore
+        assert address.longitude == google_set[i].longitude  # type: ignore
