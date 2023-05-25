@@ -62,17 +62,17 @@ Run ``pycoords -h`` to see the usage.
 Usecases
 ========
 
-- Geocoding coordinates from a CSV file (default behavior)
 .. code:: python
+  # Geocoding coordinates from a CSV file (default behavior)
   pycoords -s source.csv -o output.csv
 
-- Geocoding coordinates from a CSV file with debug logging
 .. code:: python
+  # Geocoding coordinates from a CSV file with debug logging
   pycoords -s source.csv -o output.csv -v
 
-- Using parallel processing with google maps api
-  .. code:: python
-    pycoords -s source.csv -o output.csv -e google -p
+.. code:: python
+  # Using parallel processing with google maps api
+  pycoords -s source.csv -o output.csv -e google -p
 
 
 Cyclomatic Complexity testing with Radon
