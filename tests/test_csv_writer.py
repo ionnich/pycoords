@@ -4,7 +4,6 @@ import os
 from pycoords.address import Address
 from pycoords.csv_writer import write_csv
 
-
 t_dataset = [
     Address(
         name="714",
