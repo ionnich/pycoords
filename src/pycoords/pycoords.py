@@ -1,6 +1,7 @@
 import re
 import sys
-from os import chdir, getcwd, path
+from os import getcwd, path
+from pathlib import Path
 from time import perf_counter
 
 from loguru import logger as _logger
@@ -31,14 +32,33 @@ def is_csv(file_name):
     return re.search(csv_format, file_name, re.IGNORECASE) is not None
 
 
-def file_exists(file_name):
-    """Checks if a file exists in current directory"""
-    current_dir = path.abspath(getcwd())
-    pycoords_dir = path.dirname(path.abspath(__file__))
-    file_name = path.join(current_dir, file_name)
-    _logger.debug("Locating file in: ...%s" % file_name[5:])
-    _logger.debug("Locating dir in: ...%s" % pycoords_dir)
-    return path.exists(file_name)
+def parse_file(file_name):
+    """
+    Parses a file from input and returns the absolute path of the file.
+
+    Args:
+        file_name (str): Name of the file to be parsed.
+
+    Returns:
+        str: Absolute path of the file.
+    """
+
+    file_path = Path(file_name).absolute()
+    return str(file_path)
+
+
+def file_exists(file_path):
+    """
+    Checks if a file exists in current directory
+
+    Args:
+        file_path (str): Path of the file to be validated.
+
+    Returns:
+        bool: True if the file exists. False otherwise.
+    """
+
+    return Path(file_path).exists()
 
 
 def setup_logging(loglevel):
@@ -63,28 +83,25 @@ def main(args):
       args (List[str]): Command line parameters as list of strings.
     """
     args = parse_args(args)
+    source_csv = parse_file(args.source)
+    engine = args.engine
+
     setup_logging(args.loglevel)
 
-    if not is_csv(args.source):
+    if not is_csv(source_csv):
         _logger.error("Input is not a CSV file -> exiting")
         sys.exit(1)
 
-    source_csv = args.source
-
-    current_dir = path.abspath(getcwd())
-    source_csv = path.join(current_dir, source_csv)
-
-    if engine := args.engine:
-        _logger.info("Using %s as engine" % engine)
-
     if not file_exists(source_csv):
-        _logger.error("%s is invalid -> exiting" % source_csv)
+        _logger.error("%s does not exist -> exiting" % source_csv)
         sys.exit(1)
 
+    _logger.info("Geocoding with %s" % engine)
     start = perf_counter()
+
     csv_rows: list = read_csv(source_csv)
     total_rows = len(csv_rows)
-    _logger.debug("Reading %d rows from %s" % (total_rows, source_csv))
+    _logger.debug("Reading %d rows from: %s" % (total_rows, source_csv))
     addresses: list = dict_to_address(csv_rows)
     total_addresses = len(addresses)
     _logger.debug(
@@ -108,19 +125,17 @@ def main(args):
         )
 
     success_count: int = write_csv(parsed_addresses, output_filename)
+    # shorten the path of the output file
+    output_filename = path.relpath(output_filename, getcwd())
     end = perf_counter()
     _logger.info(
-        "%d/%d addresses now have coordinates in %s"
-        % (success_count, total_rows, output_filename)
+        "%d/%d addresses now have coordinates in: %s"
+        % (success_count, total_rows, output_filename),
     )
     _logger.debug("Finished in: %.2f seconds" % (end - start))
 
 
 def run():
-    # change working directory to current directory
-    running_directory = getcwd()
-    chdir(running_directory)
-    _logger.debug("Pycoords is running in: %s" % running_directory)
     main(sys.argv[1:])
 
 

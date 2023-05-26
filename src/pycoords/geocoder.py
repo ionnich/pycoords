@@ -1,5 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
-from os import cpu_count, getcwd, getenv, path
+from os import cpu_count, getenv
+from pathlib import Path
 
 from alive_progress import alive_bar as pbar
 from alive_progress import alive_it as auto_bar
@@ -16,10 +17,7 @@ def get_api_key() -> str:
     Returns:
         str : The Google Maps API key.
     """
-    # change directory to current directory
-    running_directory = getcwd()
-    # load environment variables from .env file
-    load_dotenv(dotenv_path=path.join(running_directory, ".env"))
+    load_dotenv(dotenv_path=Path(".env"))
 
     if api_key := getenv("GOOGLE_MAPS_API_KEY"):
         return api_key

@@ -105,15 +105,16 @@ def test_geocoder():
     with pytest.raises(SystemExit):
         geocode_addresses(t_dataset, engine="invalid")
 
+    engine = "google"
+    google_set = [google(query) for query in test_queries]
+    mapped_addresses, _ = geocode_addresses(t_dataset, engine=engine, parallel=True)
+    for i, address in enumerate(mapped_addresses):
+        assert address.latitude == google_set[i][0]  # type: ignore
+        assert address.longitude == google_set[i][1]  # type: ignore
+
     engine = "nominatim"
     nominatim_set = [nominatim(query) for query in test_queries]
     mapped_addresses, _ = geocode_addresses(t_dataset, engine=engine, parallel=True)
     for i, address in enumerate(mapped_addresses):
-        assert address.latitude == nominatim_set[i][0]  # type: ignore
-        assert address.longitude == nominatim_set[i][1]  # type: ignore
-
-    engine = "google"
-    google_set = [google(query) for query in test_queries]
-    for i, address in enumerate(mapped_addresses):
-        assert address.latitude == google_set[i].latitude  # type: ignore
-        assert address.longitude == google_set[i].longitude  # type: ignore
+        assert address.latitude == nominatim_set[i].latitude  # type: ignore
+        assert address.longitude == nominatim_set[i].longitude  # type: ignore
