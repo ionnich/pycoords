@@ -2,29 +2,28 @@ from pydantic import BaseModel, validator
 
 
 class Address(BaseModel):
-    """Address dataclass that corresponds to a venue address.
+    """
+    Address dataclass that corresponds to a venue address.
 
-    Attributes:
-        name (str): The name of the venue.
-        address (str): The address of the venue.
-        city (str): The city of the venue.
-        state_code (str): The state code of the venue.
-        country_code (str): The country code of the venue.
-        postal_code (str): The postal code of the venue.
-        phone (str): The phone number of the venue.
-        latitude (str): The latitude of the venue.
-        longitude (str): The longitude of the venue.
+    :ivar str name: The name of the venue.
+    :ivar str address: The address of the venue.
+    :ivar str city: The city of the venue.
+    :ivar str state_code: The state code of the venue.
+    :ivar str country_code: The country code of the venue.
+    :ivar str postal_code: The postal code of the venue.
+    :ivar str phone: The phone number of the venue.
+    :ivar str latitude: The latitude of the venue.
+    :ivar str longitude: The longitude of the venue.
     """
 
     @validator("*")
-    def none_to_empty(cls, _string: str):
-        """Converts None values to empty strings.
+    def none_to_empty(cls, _string: str) -> str:
+        """
+        Converts None values to empty strings.
 
-        Args:
-            _string (str): The string to convert.
-
-        Returns:
-            str: The converted string.
+        :param str _string: The string to convert.
+        :return: The converted string.
+        :rtype: str
         """
 
         try:
@@ -46,10 +45,10 @@ class Address(BaseModel):
 
     def __str__(self):
         """
-        Builds a string of the address fit for geocoding fields
+        Builds a string of the address fit for geocoding fields.
 
-        Returns:
-            str: A string representation of the address necessary for geocoding.
+        :return: A string representation of the address necessary for geocoding.
+        :rtype: str
         """
 
         ignored_keys = ["phone", "name"]

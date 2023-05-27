@@ -2,16 +2,13 @@ import argparse
 
 
 def parse_args(args: list) -> argparse.Namespace:
-    """Parse command line parameters
-
-    Args:
-      args (List[str]): command line parameters as list of strings
-          (for example  ``["--help"]``).
-
-    Returns:
-      :obj:`argparse.Namespace`: command line parameters namespace
     """
+    Parse command line parameters.
 
+    :param List[str] args: Command line parameters as list of strings (for example, ["--help"]).
+    :return: Command line parameters namespace.
+    :rtype: argparse.Namespace
+    """
     parser = argparse.ArgumentParser(
         description="Gets the coordinates of venues via csv I/O"
     )

@@ -19,53 +19,46 @@ __license__ = "MIT"
 _logger.name = __name__  # type: ignore
 
 
-def is_csv(file_name):
-    """Checks if a file name ends with '.csv'
+def is_csv(file_name: str) -> bool:
+    """
+    Checks if a file name ends with '.csv'.
 
-    Args:
-        file_path (str): Path of the file to be validated.
-
-    Returns:
-        bool: True if the extension of the input is '.csv'. False otherwise.
+    :param str file_path: Path of the file to be validated.
+    :return: True if the extension of the input is '.csv'. False otherwise.
+    :rtype: bool
     """
     csv_format = r"^.*\.csv$"
     return re.search(csv_format, file_name, re.IGNORECASE) is not None
 
 
-def parse_file(file_name):
+def parse_file(file_name: str) -> str:
     """
     Parses a file from input and returns the absolute path of the file.
 
-    Args:
-        file_name (str): Name of the file to be parsed.
-
-    Returns:
-        str: Absolute path of the file.
+    :param str file_name: Name of the file to be parsed.
+    :return: Absolute path of the file.
+    :rtype: str
     """
-
     file_path = Path(file_name).absolute()
     return str(file_path)
 
 
-def file_exists(file_path):
+def file_exists(file_path: str) -> bool:
     """
-    Checks if a file exists in current directory
+    Checks if a file exists in the current directory.
 
-    Args:
-        file_path (str): Path of the file to be validated.
-
-    Returns:
-        bool: True if the file exists. False otherwise.
+    :param str file_path: Path of the file to be validated.
+    :return: True if the file exists. False otherwise.
+    :rtype: bool
     """
-
     return Path(file_path).exists()
 
 
-def setup_logging(loglevel):
-    """Setup basic logging
+def setup_logging(loglevel: str):
+    """
+    Setup basic logging.
 
-    Args:
-      loglevel (int): minimum loglevel for emitting messages
+    :param str loglevel: Minimum loglevel for emitting messages.
     """
     _logger.remove()
     level = "DEBUG" if loglevel else "INFO"
@@ -75,12 +68,12 @@ def setup_logging(loglevel):
     _logger.add(sys.stderr, level=level)
 
 
-def main(args):
-    """CLI program that takes a CSV file that stores venues as input
+def main(args: list):
+    """
+    CLI program that takes a CSV file that stores venues as input
     and returns a new CSV file with the coordinates of the venues.
 
-    Args:
-      args (List[str]): Command line parameters as list of strings.
+    :param list args: Command line parameters as list of strings.
     """
     args = parse_args(args)
     source_csv = parse_file(args.source)

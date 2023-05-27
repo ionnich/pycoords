@@ -14,8 +14,8 @@ def get_api_key() -> str:
     """
     Gets the Google Maps API key from the .env file or prompts the user to enter it.
 
-    Returns:
-        str : The Google Maps API key.
+    :return: The Google Maps API key.
+    :rtype: str
     """
     load_dotenv(dotenv_path=Path(".env"))
 
@@ -35,12 +35,10 @@ def parallel_processing(addresses: list, backend) -> list:
     """
     Geocodes a list of addresses in parallel.
 
-    Args:
-        addresses (list): A list of addresses.
-        backend (function): The geocoding backend to use.
-
-    Returns:
-        list: A list of addresses with the lat and lon attributes populated.
+    :param list addresses: A list of addresses.
+    :param Callable backend: The geocoding backend to use.
+    :return: A list of addresses with the lat and lon attributes populated.
+    :rtype: list
     """
     workers = cpu_count()
 
@@ -65,14 +63,11 @@ def single_threaded_processing(addresses: list, backend) -> list:
     """
     Geocodes a list of addresses in a single thread.
 
-    Args:
-        addresses (list): A list of addresses.
-        backend (function): The geocoding backend to use.
-
-    Returns:
-        list: A list of addresses with the lat and lon attributes populated.
+    :param list addresses: A list of addresses.
+    :param Callable backend: The geocoding backend to use.
+    :return: A list of addresses with the lat and lon attributes populated.
+    :rtype: list
     """
-
     addresses = auto_bar(addresses, bar="filling")  # type: ignore
     return [backend(address) for address in addresses]
 
@@ -81,13 +76,10 @@ def remove_geocoded(addresses: list) -> tuple:
     """
     Removes addresses that have already been geocoded.
 
-    Args:
-        addresses (list): A list of addresses.
-
-    Returns:
-        tuple: a list of unparsed addresses and their indices
+    :param list addresses: A list of addresses.
+    :return: A tuple containing a list of unparsed addresses and their indices.
+    :rtype: tuple
     """
-
     unparsed_addresses = list()
     indices = list()
 
@@ -103,12 +95,10 @@ def get_position_in(addresses: list, address: Address) -> int:
     """
     Gets the position of an address in a list of addresses.
 
-    Args:
-        addresses (list): A list of addresses.
-        address (Address): The address to find.
-
-    Returns:
-        int: The position of the address in the list of addresses.
+    :param list addresses: A list of addresses.
+    :param Address address: The address to find.
+    :return: The position of the address in the list of addresses.
+    :rtype: int
     """
     print("getting index")
     return addresses.index(address)
@@ -120,18 +110,14 @@ def generate_coordinates(
     """
     Wrapper for geocoding functions.
 
-    Args:
-        addresses (list): A list of addresses.
-        engine (str, optional): The geocoding engine to use. Defaults to "nominatim".
-        api_key (str, optional): The Google Maps API key. Defaults to None.
-        parallel (bool, optional): Whether to use parallel processing. Defaults to True.
-
-    Returns:
-        list: A list of addresses with the lat and lon attributes populated.
-    Raises:
-        SystemExit: If the engine is not supported.
+    :param list addresses: A list of addresses.
+    :param str engine: The geocoding engine to use. (Optional, defaults to "nominatim")
+    :param str api_key: The Google Maps API key. (Optional, defaults to None)
+    :param bool parallel: Whether to use parallel processing. (Optional, defaults to True)
+    :return: A list of addresses with the lat and lon attributes populated.
+    :rtype: list
+    :raises SystemExit: If the engine is not supported.
     """
-
     engines = {
         "nominatim": geocode_with_nominatim,
         "google": geocode_with_google_maps,
@@ -163,21 +149,17 @@ def generate_coordinates(
 def geocode_addresses(
     addresses: list, engine="nominatim", api_key=None, parallel=True
 ) -> tuple:
-    """Geocodes a list of addresses.
-
-    Args:
-        addresses (list): A list of addresses.
-        engine (str, optional): The geocoding engine to use. Defaults to "nominatim".
-        api_key (str, optional): The Google Maps API key. Defaults to None.
-        parallel (bool, optional): Whether to use parallel processing. Defaults to True.
-
-    Returns:
-        tuple: A tuple containing a list of addresses and a count of geocoded addresses
-
-    Raises:
-        ValueError: If the engine is not supported.
     """
+    Geocodes a list of addresses.
 
+    :param list addresses: A list of addresses.
+    :param str engine: The geocoding engine to use. (Optional, defaults to "nominatim")
+    :param str api_key: The Google Maps API key. (Optional, defaults to None)
+    :param bool parallel: Whether to use parallel processing. (Optional, defaults to True)
+    :return: A tuple containing a list of addresses and a count of geocoded addresses.
+    :rtype: tuple
+    :raises ValueError: If the engine is not supported.
+    """
     if isinstance(addresses, Address):
         addresses = [addresses]
 

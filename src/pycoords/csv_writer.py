@@ -3,14 +3,12 @@ from csv import DictWriter
 
 
 def write_csv(addresses: list, filename="geocoded_addresses.csv") -> int:
-    """Writes the data found in a list of addresses into a csv file.
+    """
+    Writes the data found in a list of addresses into a CSV file.
 
-    Args:
-        addresses (list): A list of addresses.
-
-    Returns:
-        int: The number of addresses written to the csv file.
-
+    :param list addresses: A list of addresses.
+    :return: The number of addresses written to the CSV file.
+    :rtype: int
     """
     filename = os.path.join(os.path.dirname(__file__), filename)
     count = 0

@@ -12,11 +12,9 @@ def geocode_with_nominatim(address: Address, attempts=3) -> Address:
     """
     Geocodes an address using the Nominatim geocoder.
 
-    Args:
-        address (Address): The address to be geocoded.
-
-    Returns:
-        Address: A new address object with the lat and lon attributes populated.
+    :param Address address: The address to be geocoded.
+    :return: A new address object with the lat and lon attributes populated.
+    :rtype: Address
     """
     if attempts <= 0:
         return address
@@ -52,15 +50,11 @@ def geocode_with_google_maps(address: Address, api_key=None, attempts=3) -> Addr
     Geocodes an address using the Google Maps API.
     The function recursively calls 3 times itself if the API returns an error.
 
-
-    Args:
-        address (Address): The address to be geocoded.
-        api_key (str, optional): The Google Maps API key. Defaults to None.
-
-    Returns:
-        Address: A new address object with the lat and lon attributes populated.
+    :param Address address: The address to be geocoded.
+    :param str api_key: The Google Maps API key. (Optional)
+    :return: A new address object with the lat and lon attributes populated.
+    :rtype: Address
     """
-
     if attempts <= 0:
         return address
 
@@ -96,11 +90,9 @@ def geocode_with_ip_rotation(address: Address) -> Address:
     """
     Geocodes an address using Nominatim with IP rotation.
 
-    Args:
-        address (Address): The address to be geocoded.
-
-    Returns:
-        Address: A new address object with the lat and lon attributes populated.
+    :param Address address: The address to be geocoded.
+    :return: A new address object with the lat and lon attributes populated.
+    :rtype: Address
     """
     url = "https://nominatim.openstreetmap.org/search"
 

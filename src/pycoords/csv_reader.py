@@ -2,14 +2,13 @@ import csv
 import os
 
 
-def read_csv(file_name) -> list:
-    """Reads a csv file and returns a dictionary of addresses.
+def read_csv(file_name: str) -> list:
+    """
+    Reads a CSV file and returns a dictionary of addresses.
 
-    Args:
-        file_name (str): The file name of the csv to be read.
-
-    Returns:
-        list: A list of dictionaries that store the attributes of addresses.
+    :param str file_name: The file name of the CSV to be read.
+    :return: A list of dictionaries that store the attributes of addresses.
+    :rtype: list
     """
     file_name = os.path.join(os.path.dirname(__file__), file_name)
     addresses = []
